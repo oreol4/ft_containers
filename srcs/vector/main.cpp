@@ -3,24 +3,61 @@
 
 #include "Vector.hpp"
 
+
+
 int main() {
 
 	ft::vector<int> v1(5);
 	std::vector<int> r1(5);
-	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
-	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+//	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 
 //	v1.push_back(22);
 	for (size_t i = 0;i < 10; ++i) {
 		v1.push_back(22);
 		r1.push_back(22);
-		std::cout << "(V1) size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
-		std::cout << "(R1) size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+//		std::cout << "(V1) size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//		std::cout << "(R1) size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 	}
-	v1.resize(4);
-	r1.resize(4);
-	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
-	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+	v1.push_back(3424);
+	v1.pop_back();
+//	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+//	r1.pop_back();
+//	std::cout << r1[r1.size()] << std::endl;
+//	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+//	std::cout << r1[r1.size()] << std::endl;
+	for (size_t i = 0; i < v1.size(); i++) {
+		std::cout << v1[i] << std::endl;
+	}
+//	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//	for (size_t i = 0; i < r1.size(); i++) {
+//		std::cout << r1[i] << std::endl;
+//	}
+//	v1.resize(4);
+//	r1.resize(4);
+//	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+
+//	r1.clear();
+//	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+//	v1.clear();
+//	std::cout << "|(V1) size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//	v1.push_back(3424);
+//	int k = v1.size();
+//	std::cout << "|(V1) size = " << v1[k] << " " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//	v1.clear();
+//	std::cout << "(V1) size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+//	std::cout << r1[r1.size() + 1];
+//	try {
+//		std::cout << v1.at(10) << std::endl;
+//	}catch(std::exception &e) {
+//		std::cerr << e.what() << std::endl;
+//	}
+//	std::cout << r1.back() << std::endl;
+
+
+//	v1.front() -= 100;
+//	std::cout << v1.front() << std::endl;
 //	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
 //	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 //	for (size_t i = 0; i < v1.size(); i++) {
