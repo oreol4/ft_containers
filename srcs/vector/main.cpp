@@ -7,28 +7,48 @@
 
 int main() {
 
-	ft::vector<int> v1(5);
-	std::vector<int> r1(5);
+	ft::vector<int> v1;
+	std::vector<int> r1;
 //	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
 //	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 
 //	v1.push_back(22);
-	for (size_t i = 0;i < 10; ++i) {
+	for (size_t i = 0;i < 8; ++i) {
 		v1.push_back(22);
 		r1.push_back(22);
 //		std::cout << "(V1) size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
 //		std::cout << "(R1) size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 	}
-	v1.push_back(3424);
+//	v1.push_back(2);
+//	r1.push_back(2);
 	v1.pop_back();
+	r1.pop_back();
+//	for (size_t i = 0; i < v1.capacity(); i++) {
+//		std::cout << "my  " << v1[i] <<  " " << i << std::endl;
+//	}
+//	for (size_t i = 0; i < r1.capacity(); i++) {
+//		std::cout << "stl " << r1[i] << " " << i << std::endl;
+//	}
+	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
+	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
+	std::vector<int>::iterator it = r1.begin();
+	std::vector<int>::iterator ite = r1.end();
+	for (;it != ite;it++) {
+		std::cout << *it << std::endl;
+	}
+//	iterator it = v1.begin();
+//	std::cout << "stl " << r1.back() << std::endl;
+//	std::cout << "my  " << v1.back() << std::endl;
+//	v1.push_back(3424);
+//	v1.pop_back();
 //	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 //	r1.pop_back();
 //	std::cout << r1[r1.size()] << std::endl;
 //	std::cout << "size = " << r1.size() << " cap = " << r1.capacity() << std::endl;
 //	std::cout << r1[r1.size()] << std::endl;
-	for (size_t i = 0; i < v1.size(); i++) {
-		std::cout << v1[i] << std::endl;
-	}
+//	for (size_t i = 0; i < v1.size(); i++) {
+//		std::cout << v1[i] << std::endl;
+//	}
 //	std::cout << "size = " << v1.size() << " cap = " << v1.capacity() << std::endl;
 //	for (size_t i = 0; i < r1.size(); i++) {
 //		std::cout << r1[i] << std::endl;

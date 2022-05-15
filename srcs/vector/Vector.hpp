@@ -3,6 +3,9 @@
 #include <iostream>
 #include <exception>
 
+template < class B >
+struct vectorIterator:std::iterator <std::random_access_iterator_tag >  {};
+
 namespace ft {
 	template< typename T , typename Aloc = std::allocator<T> >
 
@@ -13,6 +16,7 @@ namespace ft {
 		size_t cap;
 		Aloc myallocator;
 	public:
+		std::
 		// EXCEPTION
 		class LargeTooHighIndex:public std::exception {
 		public:
@@ -85,7 +89,7 @@ namespace ft {
 				myallocator.deallocate(newarr, n);
 			}
 			myallocator.deallocate(arr, sz);
-			for (size_t i = 0; i < cap; i++) {
+			for (size_t i = 0; i < sz; i++) {
 				myallocator.destroy(arr);
 			}
 			arr = newarr;
@@ -111,7 +115,10 @@ namespace ft {
 		// MODIFIERS
 		void push_back(const value_type& value) {
 			if (sz == cap) {
-				reserve(2 * cap);
+				if (cap == 0) // в первом случае было бы 2 * 0, если оставить reserve(cap * 2)
+					reserve(1);
+				else
+					reserve(cap * 2);
 			}
 			myallocator.construct(arr + sz, value);
 			sz++;
@@ -119,7 +126,7 @@ namespace ft {
 
 		void pop_back() {
 			if (sz == 0) return ;
-			myallocator.destroy(arr + sz - 1);
+			myallocator.destroy(arr + sz - 1); // (-1) sz = 7, lastIndex = 7
 			sz--;
 		};
 
