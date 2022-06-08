@@ -2,224 +2,132 @@
 # define VECTOR_HPP
 #include <iostream>
 #include <exception>
+#include <vector>
 
-template < class B >
-struct vectorIterator:std::iterator <std::random_access_iterator_tag >  {};
 
 namespace ft {
-	template< typename T , typename Aloc = std::allocator<T> >
+	template<typename T, typename Allocator = std::allocator <T> >
 
 	class vector {
 	private:
-		T *arr;
+		T *_arr;
 		size_t sz;
 		size_t cap;
-		Aloc myallocator;
+		Allocator allocator;
 	public:
-		std::
-		// EXCEPTION
-		class LargeTooHighIndex:public std::exception {
-		public:
-			virtual const char * what() const throw() {
-				return ("error: large index.");
-			};
+		//						MEMBER TYPES
+		typedef T 												value_type;
+		typedef Allocator 										allocator_type;
+		typedef typename allocator_type::reference 				reference;
+		typedef typename allocator_type::const_reference 		const_reference;
+		typedef typename allocator_type::pointer 				pointer;
+		typedef typename allocator_type::const_pointer 			const_pointer;
+		// iterators member types
+		typedef typename allocator_type::size_type 				size_type;
+		typedef typename allocator_type::difference_type 		difference_type;
+		template <class Iterator> struct iterator_traits
+		{
+			typedef typename Iterator::value_type 				value_type;
+			typedef typename Iterator::difference_type 			difference_type;
+			typedef typename Iterator::pointer					pointer;
+			typedef typename Iterator::reference				reference;
+			typedef typename Iterator::iterator_category		iterator_category;
 		};
-		// MEMBER TYPES
-		typedef T value_type;
-		typedef Aloc allocator_type;
-		typedef typename Aloc::reference reference;
-		typedef typename Aloc::const_reference const_reference;
-		typedef typename Aloc::pointer pointer;
-		typedef typename Aloc::const_pointer const_pointer;
-		// this place for iterators
-		typedef size_t size_type;
+		vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
+			allocator(alloc){}
 
-		vector(const allocator_type& alloc = allocator_type()): arr(0), sz(0), cap(0), myallocator(alloc){};
-		vector(size_t n, const value_type& value = value_type(), const Aloc& alloc = Aloc()):
-		sz(n), cap(n), myallocator(alloc){
-			arr = myallocator.allocate(n);
+		vector(size_type n, const value_type& val = value_type(),
+			   const allocator_type& alloc = allocator_type()): sz(n), cap(n),
+			   allocator(alloc){
+			_arr = allocator.allocate(n);
 			for (size_t i = 0; i < n; i++) {
-				myallocator.construct(arr + i, value);
+				allocator.construct(_arr + i, val);
 			}
-		};
+		}
 
-		~vector() {
+		~vector(){
 			for (size_t i = 0; i < cap; i++) {
-				myallocator.destroy(arr + i);
+				allocator.destroy(_arr + i);
 			}
-			if (cap)
-				myallocator.deallocate(arr, cap);
-		};
-		vector &operator=(const vector &rhs) {
-			this->arr = rhs.arr;
+			allocator.deallocate(_arr, cap);
+		}
+
+		vector(const vector<T> &rhs)
+		{
+			this->_arr = rhs._arr;
+			this->allocator = rhs.allocator;
 			this->cap = rhs.cap;
 			this->sz = rhs.sz;
-			return (*this);
-		};
-		// ITERATORS
+		}
 
-		// MEMBER FUNCTION -> CAPACITY
+		void reserve(size_type n) {
+			if (n < cap) return;
+			T *newPtr;
+			newPtr = allocator.allocate(n);
+			try {
+				std::uninitialized_copy(_arr, _arr + sz, newPtr);
+			} catch(...) {
+				allocator.deallocate(newPtr, n);
+			}
+			allocator.deallocate(_arr, sz);
+			for (size_t i = 0;i < sz; i++) {
+				allocator.destroy(_arr + i);
+			}
+			_arr = newPtr;
+			cap = n;
+		}
 
-		void resize(size_t n, value_type val = value_type())
-		{
+		void resize (size_type n, value_type val = value_type()) {
 			if (n < sz) {
-				for (size_t i = n; i < sz; i++) {
-					myallocator.destroy(arr + i);
+				for (size_t i = n; i < sz;i++) {
+					allocator.destroy(_arr + i);
 				}
 				sz = n;
-			} else {
-				if (cap < n) {
-					reserve(cap * 2);
-					for (size_t i = sz; i < cap; i++) {
-						myallocator.construct(arr + i, val);
+			} else if (n > sz) {
+				if (n > cap){
+					reserve(n);
+					for (size_t i = sz; i < n; i++) {
+						allocator.construct(_arr + i, val);
 						++sz;
 					}
 				}
 			}
-		};
+		}
 
-		void reserve(size_t n) {
-			if (n < cap)
-				return ;
-			T *newarr = myallocator.allocate(n);
-			try {
-				std::uninitialized_copy(arr, arr+sz, newarr);
-			}catch(...)
-			{
-				myallocator.deallocate(newarr, n);
-			}
-			myallocator.deallocate(arr, sz);
-			for (size_t i = 0; i < sz; i++) {
-				myallocator.destroy(arr);
-			}
-			arr = newarr;
-			cap = n;
-		};
-
-		size_type size() const {
-			return (sz);
-		};
-
-		size_type capacity() const {
-			return (cap);
-		};
-
-		size_type max_size() const {
-			return (myallocator.max_size());
-		};
-
-		bool empty() const {
-			return (sz == 0);
-		};
-
-		// MODIFIERS
-		void push_back(const value_type& value) {
+		void push_back (const value_type& val) {
 			if (sz == cap) {
-				if (cap == 0) // в первом случае было бы 2 * 0, если оставить reserve(cap * 2)
+				if (sz == 0)
 					reserve(1);
 				else
 					reserve(cap * 2);
 			}
-			myallocator.construct(arr + sz, value);
+			allocator.construct(_arr + sz, val);
 			sz++;
-		};
+		}
 
 		void pop_back() {
-			if (sz == 0) return ;
-			myallocator.destroy(arr + sz - 1); // (-1) sz = 7, lastIndex = 7
+			if (sz == 0) return;
+			allocator.destroy(_arr + sz - 1);
 			sz--;
-		};
+		}
 
-		// ELEMENT ACCESS
-		reference operator[](size_type n) {
-			return (arr[n]);
-		};
+		size_type size() const {
+			return (this->sz);
+		}
 
-		const_reference operator[] (size_type n) const {
-			return (arr[n]);
-		};
+		size_type capacity() const {
+			return (this->cap);
+		}
 
-		reference at(size_type n) {
-			if (n > cap)
-				throw LargeTooHighIndex();
-			return (arr[n]);
-		};
+		size_type max_size() const {
+			return (allocator.max_size());
+		}
 
-		const_reference at (size_type n) const {
-			if (n > cap)
-				throw LargeTooHighIndex();
-			return (arr[n]);
-		};
-
-		reference front() {
-			return (arr[0]);
-		};
-
-		const_reference front() const {
-			return (arr[0]);
-		};
-
-		reference back() {
-			return (arr[sz]);
-		};
-
-		const_reference back() const {
-			return (arr[sz]);
-		};
-
-		void clear() {
-			for (size_t i = 0; i < cap; i++) {
-				myallocator.destroy(arr);
-			}
-			sz = 0;
-		};
-		template <class A, class Alloc>
-			friend bool operator== (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs);
-
-		template <class A, class Alloc>
-			friend bool operator!= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs);
-
-		template <class A, class Alloc>
-			friend bool operator<  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs);
-
-		template <class A, class Alloc>
-			friend bool operator<= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs);
-
-		template <class A, class Alloc>
-			friend bool operator>  (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs);
-
-		template <class A, class Alloc>
-			friend bool operator>= (const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs);
+		reference 	operator[](size_type n) {
+			return (_arr[n]);
+		}
 	};
+
 }
-template <class A, class Alloc>
-bool operator== (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs) {
-	return (lhs == rhs);
-};
-
-template <class A, class Alloc>
-bool operator!= (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs) {
-	return (lhs != rhs);
-};
-
-template <class A, class Alloc>
-bool operator<  (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs) {
-	return (lhs < rhs);
-};
-
-template <class A, class Alloc>
-bool operator<= (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs) {
-	return (lhs <= rhs);
-};
-
-template <class A, class Alloc>
-bool operator>  (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs) {
-	return (lhs > rhs);
-};
-
-template <class A, class Alloc>
-bool operator>= (const ft::vector<A,Alloc>& lhs, const ft::vector<A,Alloc>& rhs) {
-	return (lhs >= rhs);
-};
 
 #endif
