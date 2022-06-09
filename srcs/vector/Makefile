@@ -8,12 +8,14 @@ SRC = main.cpp\
 
 HEADER = Vector.hpp
 
+HEADER2 = iterator.hpp
+
 OBJS = $(patsubst %.cpp, %.o, $(SRC))
 
 all:
 	$(MAKE) $(NAME)
 
-$(NAME): $(OBJS) $(HEADER)
+$(NAME): $(OBJS) $(HEADER) $(HEADER2)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJS)
 
 %.o: %.cpp

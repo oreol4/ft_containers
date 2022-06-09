@@ -3,11 +3,11 @@
 #include <iostream>
 #include <exception>
 #include <vector>
-
-
+#include "iterator.hpp"
+#include <memory>
 namespace ft {
-	template<typename T, typename Allocator = std::allocator <T> >
 
+	template<typename T, typename Allocator = std::allocator <T> >
 	class vector {
 	private:
 		T *_arr;
@@ -25,14 +25,10 @@ namespace ft {
 		// iterators member types
 		typedef typename allocator_type::size_type 				size_type;
 		typedef typename allocator_type::difference_type 		difference_type;
-		template <class Iterator> struct iterator_traits
-		{
-			typedef typename Iterator::value_type 				value_type;
-			typedef typename Iterator::difference_type 			difference_type;
-			typedef typename Iterator::pointer					pointer;
-			typedef typename Iterator::reference				reference;
-			typedef typename Iterator::iterator_category		iterator_category;
-		};
+		// iterators member types
+		typedef Iterator<RandomAccess_iterator_tag, T, ptrdiff_t, T*, T&> iterator;
+
+
 		vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
 			allocator(alloc){}
 
@@ -44,7 +40,9 @@ namespace ft {
 				allocator.construct(_arr + i, val);
 			}
 		}
-
+		iterator begin() {
+			return _arr;
+		}
 		~vector(){
 			for (size_t i = 0; i < cap; i++) {
 				allocator.destroy(_arr + i);
