@@ -8,6 +8,7 @@
 namespace ft {
 
 	template<typename T, typename Allocator = std::allocator <T> >
+
 	class vector {
 	private:
 		T *_arr;
@@ -26,7 +27,6 @@ namespace ft {
 		typedef typename allocator_type::size_type 				size_type;
 		typedef typename allocator_type::difference_type 		difference_type;
 		// iterators member types
-		typedef Iterator<RandomAccess_iterator_tag, T, ptrdiff_t, T*, T&> iterator;
 
 
 		vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
@@ -39,9 +39,6 @@ namespace ft {
 			for (size_t i = 0; i < n; i++) {
 				allocator.construct(_arr + i, val);
 			}
-		}
-		iterator begin() {
-			return _arr;
 		}
 		~vector(){
 			for (size_t i = 0; i < cap; i++) {
@@ -82,12 +79,11 @@ namespace ft {
 				}
 				sz = n;
 			} else if (n > sz) {
-				if (n > cap){
+				if (n > cap)
 					reserve(n);
-					for (size_t i = sz; i < n; i++) {
-						allocator.construct(_arr + i, val);
-						++sz;
-					}
+				for (size_t i = sz; i < n; i++) {
+					allocator.construct(_arr + i, val);
+					++sz;
 				}
 			}
 		}

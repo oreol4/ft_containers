@@ -6,8 +6,7 @@
 int main() {
 
 	ft::vector<int> v1(5);
-	ft::RandomAccess_iterator<int> it;
-	ft::RandomAccess_iterator<int> b;
-	bool t = it == b;
-	std::cout << t << std::endl;
+
+//	ft::RAIterator/t() << std::endl;
+//	ft::RAIterator<random_access_iterator_tag> t;
 }
