@@ -10,12 +10,14 @@ HEADER = Vector.hpp
 
 HEADER2 = iterator.hpp
 
+HEADER3 = utils.hpp
+
 OBJS = $(patsubst %.cpp, %.o, $(SRC))
 
 all:
 	$(MAKE) $(NAME)
 
-$(NAME): $(OBJS) $(HEADER) $(HEADER2)
+$(NAME): $(OBJS) $(HEADER) $(HEADER2) $(HEADER3)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJS)
 
 %.o: %.cpp

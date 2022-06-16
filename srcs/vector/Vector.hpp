@@ -9,11 +9,6 @@ namespace ft {
 
 	template<typename T, typename Allocator = std::allocator <T> >
 	class vector {
-	private:
-		T *_arr;
-		size_t sz;
-		size_t cap;
-		Allocator allocator;
 	public:
 		//						MEMBER TYPES
 		typedef T 												value_type;
@@ -25,6 +20,7 @@ namespace ft {
 		// iterators member types
 		typedef typename allocator_type::size_type 				size_type;
 		typedef typename allocator_type::difference_type 		difference_type;
+		typedef RAIterator< random_access_iterator_tag, T >				iterator;
 		// iterators member types
 
 
@@ -46,6 +42,12 @@ namespace ft {
 			allocator.deallocate(_arr, cap);
 		}
 
+		iterator begin() {
+			return (iterator(_arr));
+		}
+		iterator end() {
+			return (iterator(_arr + sz-1));
+		}
 		vector(const vector<T> &rhs)
 		{
 			this->_arr = rhs._arr;
@@ -119,6 +121,11 @@ namespace ft {
 		reference 	operator[](size_type n) {
 			return (_arr[n]);
 		}
+	private:
+		pointer _arr;
+		size_t sz;
+		size_t cap;
+		Allocator allocator;
 	};
 
 }
