@@ -65,7 +65,7 @@ namespace ft {
 		template < typename U >
 		bool operator!=(const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr != rhs.m_ptr); }
 
-		friend class vector;
+//		friend class vector;
 	protected:
 		pointer m_ptr;
 	};

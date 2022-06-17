@@ -5,7 +5,7 @@
 
 int main() {
 
-	ft::Vector<int> v1;
+	ft::vector<int> v1;
 
 	std::vector<int> st2;
 	for (int i = 0;i < 10; i++) {
@@ -23,12 +23,17 @@ int main() {
 	std::cout << *ite << std::endl;
 	std::cout << "My vector/iterator" << std::endl;
 
-	ft::Vector<int>::iterator myit = v1.begin();
-	ft::Vector<int>::iterator myite = v1.end()-1;
+	ft::vector<int>::iterator myit = v1.begin();
+	ft::vector<int>::iterator myite = v1.end()-1;
 	std::cout << *myit << std::endl;
 	std::cout << *myite << std::endl;
 	std::cout << *myit - *myite << std::endl;
 	myite -= 4;
 	*myite = 22;
 	std::cout << *myite << std::endl;
+
+	ft::vector<int>	newVec(myit, myite);
+	for (size_t i = 0;i < newVec.size(); i++) {
+		std::cout << newVec[i] << std::endl;
+	}
 }
