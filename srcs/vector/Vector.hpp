@@ -5,10 +5,11 @@
 #include <vector>
 #include "iterator.hpp"
 #include <memory>
+#include <cassert>
 namespace ft {
 
 	template<typename T, typename Allocator = std::allocator <T> >
-	class vector {
+	class Vector {
 	public:
 		//						MEMBER TYPES
 		typedef T 												value_type;
@@ -20,14 +21,13 @@ namespace ft {
 		// iterators member types
 		typedef typename allocator_type::size_type 				size_type;
 		typedef typename allocator_type::difference_type 		difference_type;
-		typedef RAIterator< random_access_iterator_tag, T >				iterator;
+		typedef RAIterator< random_access_iterator_tag, T >				iterator; // can use pointer from allocator
 		// iterators member types
 
-
-		vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
+		Vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
 			allocator(alloc){}
 
-		vector(size_type n, const value_type& val = value_type(),
+		Vector(size_type n, const value_type& val = value_type(),
 			   const allocator_type& alloc = allocator_type()): sz(n), cap(n),
 			   allocator(alloc){
 			_arr = allocator.allocate(n);
@@ -35,7 +35,7 @@ namespace ft {
 				allocator.construct(_arr + i, val);
 			}
 		}
-		~vector(){
+		~Vector(){
 			for (size_t i = 0; i < cap; i++) {
 				allocator.destroy(_arr + i);
 			}
@@ -46,9 +46,9 @@ namespace ft {
 			return (iterator(_arr));
 		}
 		iterator end() {
-			return (iterator(_arr + sz-1));
+			return (iterator(_arr + sz));
 		}
-		vector(const vector<T> &rhs)
+		Vector(const Vector<T> &rhs)
 		{
 			this->_arr = rhs._arr;
 			this->allocator = rhs.allocator;
@@ -71,6 +71,14 @@ namespace ft {
 			}
 			_arr = newPtr;
 			cap = n;
+		}
+
+		void	dispVector() {
+			ft::RAIterator<random_access_iterator_tag, T> ite = this->end();
+			for (ft::RAIterator<random_access_iterator_tag, T> it = this->begin(); it < ite; it++) {
+				std::cout << *it << " ";
+			}
+			std::cout << std::endl;
 		}
 
 		void resize (size_type n, value_type val = value_type()) {

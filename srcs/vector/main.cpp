@@ -5,39 +5,30 @@
 
 int main() {
 
+	ft::Vector<int> v1;
 
-//	ft::RAIterator<random_access_iterator_tag, int>	t;
-//	std::vector<int>::iterator k;
-//	std::cout << *k << std::endl;
-
-
-
-//	ft::vector<int> v1;
-//	for (int i = 0;i < 10; i++) {
-//		v1.push_back(i * 2);
-//	}
-//	ft::vector<int>::iterator iter;
-//	ft::vector<int>::iterator itend = v1.begin();
-//
-//	for (iter = v1.end();iter > itend; --iter) {
-//		std::cout << *iter << std::endl;
-//	}
-//	iter = v1.begin();
-//	std::cout << *iter-4 << std::endl;
-	ft::vector<int> v1;
-
-	std::vector<int> v2;
+	std::vector<int> st2;
 	for (int i = 0;i < 10; i++) {
-		v2.push_back(i);
+		st2.push_back(i);
 		v1.push_back(i);
 	}
-	std::vector<int>::iterator it = v2.end();
-	ft::vector<int>::iterator ite = v1.end();
-	std::cout << it[-4] << std::endl;
-	std::cout << ite[-4] << std::endl;
-//	it = v2.begin()-1;
-//	ite = v1.begin()-1;
-//	std::cout << "my " << *ite << std::endl;
-//	std::cout << "std" << *it << std::endl;
+	std::vector<int>::iterator it = st2.begin();
+	std::vector<int>::iterator ite = st2.end() - 1;
+//	it += ite;
+	std::cout << *it << std::endl;
+	std::cout << *ite << std::endl;
+	std::cout << *it - *ite << std::endl;
+	ite -= 4;
+	*ite = 22;
+	std::cout << *ite << std::endl;
+	std::cout << "My vector/iterator" << std::endl;
 
+	ft::Vector<int>::iterator myit = v1.begin();
+	ft::Vector<int>::iterator myite = v1.end()-1;
+	std::cout << *myit << std::endl;
+	std::cout << *myite << std::endl;
+	std::cout << *myit - *myite << std::endl;
+	myite -= 4;
+	*myite = 22;
+	std::cout << *myite << std::endl;
 }
