@@ -7,6 +7,7 @@
 #include <memory>
 #include <cassert>
 #include <iterator>
+#include "utils.hpp"
 namespace ft {
 
 	template<typename T, typename Allocator = std::allocator <T> >
@@ -40,14 +41,13 @@ namespace ft {
 		}
 		template < typename InputIterator >
 			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0), allocator(alloc) {
-			sz = *last - *first;
+			sz = ft::distance(first, last);
 			cap = sz;
 			_arr = allocator.allocate(cap);
-			for (size_t i = 0; i < sz; i++) {
-				allocator.construct(_arr + i);
+			for (;first != last;first++) {
+				allocator.construct(_arr + *first);
 			}
 		}
-
 		~vector(){
 			for (size_t i = 0; i < cap; i++) {
 				allocator.destroy(_arr + i);
