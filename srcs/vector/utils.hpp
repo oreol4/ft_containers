@@ -73,7 +73,6 @@ namespace  ft {
 	template <>
 	struct 	is_integral<unsigned long long int>	{static const bool value = true;};
 
-
 	template < bool B, typename T = void >
 	struct enable_if {};
 

@@ -14,8 +14,19 @@ int main() {
 //	std::cout << "char: " << ft::is_integral<char>::value << std::endl;
 
 
+	std::vector<int>	v1;
+	ft::vector<int>		m1;
+	for (size_t i = 1;i < 11; i++) {
+		v1.push_back(i*2);
+		m1.push_back(i*2);
+	}
 
-
+	std::cout << v1.at(1) << std::endl;
+	std::cout << v1.front() << std::endl;
+	std::cout << v1.back() << std::endl;
+	std::cout << m1.at(1) << std::endl;
+	std::cout << m1.front() << std::endl;
+	std::cout << m1.back() << std::endl;
 
 
 

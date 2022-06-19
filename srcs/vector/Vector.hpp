@@ -26,8 +26,6 @@ namespace ft {
 		typedef RAIterator< random_access_iterator_tag, T >				iterator; // can use pointer from allocator
 		// iterators member types
 
-
-
 		explicit vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
 			allocator(alloc){}
 
@@ -118,7 +116,7 @@ namespace ft {
 					reserve(cap * 2);
 			}
 			allocator.construct(_arr + sz, val);
-			sz++;
+			++sz;
 		}
 
 		void pop_back() {
@@ -127,22 +125,30 @@ namespace ft {
 			sz--;
 		}
 
-		size_type size() const {
-			return (this->sz);
-		}
+		size_type size() const { return (this->sz);}
 
-		size_type capacity() const {
-			return (this->cap);
-		}
+		size_type capacity() const { return (this->cap);}
 
-		size_type max_size() const {
-			return (allocator.max_size());
-		}
+		size_type max_size() const { return (allocator.max_size());}
 
-		reference 	operator[](size_type n) {
-			return (_arr[n]);
-		}
-	private:
+		bool empty() const {return (sz > 0 ? 0 : 1);}
+
+		reference 	operator[](size_type n) { return (_arr[n]); }
+
+		reference at(size_type n) { return *(_arr + n);}
+
+		const_reference at(size_type n) const { return *(_arr + n); }
+
+		reference	front() { return *(_arr); }
+
+		const_reference front() const { return *(_arr); }
+
+		reference		back() { return *(_arr + sz - 1); }
+
+		const_reference back() const {return *(_arr + sz - 1); }
+
+
+	protected:
 		pointer _arr;
 		size_t sz;
 		size_t cap;
