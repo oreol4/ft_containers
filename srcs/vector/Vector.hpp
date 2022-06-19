@@ -49,21 +49,16 @@ namespace ft {
 			for (size_t i = 0; i < cap; i++) {
 				allocator.destroy(_arr + i);
 			}
-			allocator.deallocate(_arr, cap);
+			if (cap)
+				allocator.deallocate(_arr, cap);
 		}
 
-		iterator begin() {
-			return (iterator(_arr));
-		}
-		iterator end() {
-			return (iterator(_arr + sz));
-		}
-		vector(const vector<T> &rhs)
+		vector(const vector<T> &rhs):_arr(rhs._arr), allocator(rhs.allocator), cap(rhs.cap), sz(rhs.sz)
 		{
-			this->_arr = rhs._arr;
-			this->allocator = rhs.allocator;
-			this->cap = rhs.cap;
-			this->sz = rhs.sz;
+//			this->_arr = rhs._arr;
+//			this->allocator = rhs.allocator;
+//			this->cap = rhs.cap;
+//			this->sz = rhs.sz;
 		}
 
 		void reserve(size_type n) {
@@ -124,27 +119,31 @@ namespace ft {
 			sz--;
 		}
 
-		size_type size() const { return (this->sz);}
+		iterator 			begin() { return (iterator(_arr));}
 
-		size_type capacity() const { return (this->cap);}
+		iterator			end() { return (iterator(_arr + sz)); }
 
-		size_type max_size() const { return (allocator.max_size());}
+		size_type 			size() const { return (this->sz);}
 
-		bool empty() const {return (sz > 0 ? 0 : 1);}
+		size_type 			capacity() const { return (this->cap);}
 
-		reference 	operator[](size_type n) { return (_arr[n]); }
+		size_type 			max_size() const { return (allocator.max_size());}
 
-		reference at(size_type n) { return *(_arr + n);}
+		bool empty() 		const {return (sz > 0 ? 0 : 1);}
 
-		const_reference at(size_type n) const { return *(_arr + n); }
+		reference 			operator[](size_type n) { return (_arr[n]); }
 
-		reference	front() { return *(_arr); }
+		reference 			at(size_type n) { return *(_arr + n);}
 
-		const_reference front() const { return *(_arr); }
+		const_reference 	at(size_type n) const { return *(_arr + n); }
 
-		reference		back() { return *(_arr + sz - 1); }
+		reference			front() { return *(_arr); }
 
-		const_reference back() const {return *(_arr + sz - 1); }
+		const_reference 	front() const { return *(_arr); }
+
+		reference			back() { return *(_arr + sz - 1); }
+
+		const_reference 	back() const {return *(_arr + sz - 1); }
 
 		template < typename value_type, typename Alloc >
 		friend bool operator== (ft::vector<value_type , Alloc>& rhs, ft::vector<value_type, Alloc>& lhs);

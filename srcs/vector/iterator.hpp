@@ -23,47 +23,48 @@ namespace ft {
 
 		RAIterator(const RAIterator	& copy) { *this = copy;}
 
-		RAIterator&	operator++() { this->m_ptr++; return(*this); }
-		RAIterator	operator++(int) { RAIterator	tmp(*this); this->m_ptr++; return(tmp); }
+		RAIterator&		operator++() { this->m_ptr++; return(*this); }
 
-		RAIterator&	operator--() {this->m_ptr--; return RAIterator(*this); }
+		RAIterator		operator++(int) { RAIterator	tmp(*this); this->m_ptr++; return(tmp); }
 
-		RAIterator&	operator--(int) { RAIterator	tmp(*this); this->m_ptr--; return (tmp);}
+		RAIterator&		operator--() {this->m_ptr--; return RAIterator(*this); }
 
-		RAIterator	operator-(different_type n) const { return RAIterator(this->m_ptr - n);}
+		RAIterator&		operator--(int) { RAIterator	tmp(*this); this->m_ptr--; return (tmp);}
 
-		RAIterator	operator+(different_type n) const { return RAIterator(this->m_ptr + n);}
+		RAIterator		operator-(different_type n) const { return RAIterator(this->m_ptr - n);}
 
-		reference 	operator[](different_type n) { return *(this + n); } // bad work
+		RAIterator		operator+(different_type n) const { return RAIterator(this->m_ptr + n);}
 
-		RAIterator operator+=(different_type n) { return RAIterator(this->m_ptr += n); }
+		reference 		operator[](different_type n) { return *(this + n); } // bad work
 
-		RAIterator	operator-=(different_type n) { return RAIterator(this->m_ptr -= n);}
+		RAIterator		operator+=(different_type n) { return RAIterator(this->m_ptr += n); }
 
-		template < typename U >
-		RAIterator&	operator=(const RAIterator<random_access_iterator_tag, U> &rhs) { *this = rhs; return (*this);}
+		RAIterator		operator-=(different_type n) { return RAIterator(this->m_ptr -= n);}
 
-		reference 	operator*() { return (*m_ptr);}
+		reference		operator*() { return (*m_ptr);}
 
-		pointer operator->() { return (this->m_ptr); }
+		pointer 		operator->() { return (this->m_ptr); }
 
 		template < typename U >
-		bool operator<(const RAIterator<random_access_iterator_tag, U> &rhs) { return ( this->m_ptr < rhs.m_ptr); }
+		bool operator< (const RAIterator<random_access_iterator_tag, U> &rhs) { return ( this->m_ptr < rhs.m_ptr); }
 
 		template < typename U >
-		bool operator<=(const RAIterator<random_access_iterator_tag, U> &rhs) { return ( this->m_ptr <= rhs.m_ptr); }
+		RAIterator&	operator= (const RAIterator<random_access_iterator_tag, U> &rhs) { *this = rhs; return (*this);}
 
 		template < typename U >
-		bool operator>(const RAIterator<random_access_iterator_tag, U> &rhs) {return ( this->m_ptr > rhs.m_ptr); }
+		bool operator<= (const RAIterator<random_access_iterator_tag, U> &rhs) { return ( this->m_ptr <= rhs.m_ptr); }
 
 		template < typename U >
-		bool	operator>=(const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr >= rhs.m_ptr); }
+		bool operator> (const RAIterator<random_access_iterator_tag, U> &rhs) {return ( this->m_ptr > rhs.m_ptr); }
 
 		template < typename U >
-		bool operator==(const RAIterator<random_access_iterator_tag, U> &rhs) {return (this->m_ptr == rhs.m_ptr); }
+		bool	operator>= (const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr >= rhs.m_ptr); }
 
 		template < typename U >
-		bool operator!=(const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr != rhs.m_ptr); }
+		bool operator== (const RAIterator<random_access_iterator_tag, U> &rhs) {return (this->m_ptr == rhs.m_ptr); }
+
+		template < typename U >
+		bool operator!= (const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr != rhs.m_ptr); }
 
 //		friend class vector;
 	protected:
