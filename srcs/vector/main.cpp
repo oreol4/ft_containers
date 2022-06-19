@@ -15,20 +15,39 @@ int main() {
 
 
 	std::vector<int>	v1;
+	std::vector<int>	v2;
 	ft::vector<int>		m1;
+	ft::vector<int>		m2;
+	v1.push_back(1);
 	for (size_t i = 1;i < 11; i++) {
 		v1.push_back(i*2);
+		v2.push_back(i*2);
 		m1.push_back(i*2);
+		m2.push_back(i*2);
 	}
+//	std::cout << v1.at(1) << std::endl;
+//	std::cout << v1.front() << std::endl;
+//	std::cout << v1.back() << std::endl;
+//	std::cout << m1.at(1) << std::endl;
+//	std::cout << m1.front() << std::endl;
+//	std::cout << m1.back() << std::endl;
 
-	std::cout << v1.at(1) << std::endl;
-	std::cout << v1.front() << std::endl;
-	std::cout << v1.back() << std::endl;
-	std::cout << m1.at(1) << std::endl;
-	std::cout << m1.front() << std::endl;
-	std::cout << m1.back() << std::endl;
 
-
+	bool tmp;
+	tmp = v1 < v2;
+	std::cout << tmp << std::endl;
+//	bool tmp;
+//	bool tmp2;
+//	m1.push_back(2);
+//	m2.push_back(2);
+//	tmp = m2 == m1;
+//	tmp2 = m2 != m1;
+//
+//	std::cout << "== " << tmp << std::endl;
+//	std::cout << "!= " << tmp2 << std::endl;
+//
+//	m1.dispVector();
+//	m2.dispVector();
 
 
 

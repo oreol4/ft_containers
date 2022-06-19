@@ -2,7 +2,8 @@
 # define UTILS_HPP
 
 #include <cstddef>
-
+#include "Vector.hpp"
+#include "utils.hpp"
 struct input_iterator_tag{};
 struct output_iterator_tag{};
 struct forward_iterator_tag: public input_iterator_tag{};
@@ -78,6 +79,7 @@ namespace  ft {
 
 	template < typename T >
 	struct enable_if<true, T> {typedef T type;};
+
 }
 
 

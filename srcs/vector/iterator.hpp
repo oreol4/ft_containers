@@ -17,7 +17,7 @@ namespace ft {
 		typedef Category	iterator_category;
 
 		//							MEMBER OPERATORS		//
-		explicit RAIterator():m_ptr(NULL){};
+		RAIterator():m_ptr(NULL){};
 
 		RAIterator(pointer ptr):m_ptr(ptr){};
 
