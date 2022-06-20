@@ -6,18 +6,20 @@ NAME = vector
 
 SRC = main.cpp\
 
-HEADER = Vector.hpp
+HEADER = vector.hpp
 
 HEADER2 = iterator.hpp
 
 HEADER3 = utils.hpp
+
+HEADER4 = reverse_iterator.hpp
 
 OBJS = $(patsubst %.cpp, %.o, $(SRC))
 
 all:
 	$(MAKE) $(NAME)
 
-$(NAME): $(OBJS) $(HEADER) $(HEADER2) $(HEADER3)
+$(NAME): $(OBJS) $(HEADER) $(HEADER2) $(HEADER3) $(HEADER4)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJS)
 
 %.o: %.cpp

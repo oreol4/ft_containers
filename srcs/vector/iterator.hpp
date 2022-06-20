@@ -2,7 +2,7 @@
 # define ITERATOR_HPP
 
 #include "utils.hpp"
-#include "Vector.hpp"
+#include "vector.hpp"
 namespace ft {
 
 	template < typename Category , typename RAI, typename Distance = ptrdiff_t,
@@ -46,31 +46,30 @@ namespace ft {
 		pointer 		operator->() { return (this->m_ptr); }
 
 		template < typename U >
-		bool operator< (const RAIterator<random_access_iterator_tag, U> &rhs) { return ( this->m_ptr < rhs.m_ptr); }
+		bool operator< (const RAIterator<std::random_access_iterator_tag, U> &rhs) { return ( this->m_ptr < rhs.m_ptr); }
 
 		template < typename U >
-		RAIterator&	operator= (const RAIterator<random_access_iterator_tag, U> &rhs) { *this = rhs; return (*this);}
+		RAIterator&	operator= (const RAIterator<std::random_access_iterator_tag, U> &rhs) { *this = rhs; return (*this);}
 
 		template < typename U >
-		bool operator<= (const RAIterator<random_access_iterator_tag, U> &rhs) { return ( this->m_ptr <= rhs.m_ptr); }
+		bool operator<= (const RAIterator<std::random_access_iterator_tag, U> &rhs) { return ( this->m_ptr <= rhs.m_ptr); }
 
 		template < typename U >
-		bool operator> (const RAIterator<random_access_iterator_tag, U> &rhs) {return ( this->m_ptr > rhs.m_ptr); }
+		bool operator> (const RAIterator<std::random_access_iterator_tag, U> &rhs) {return ( this->m_ptr > rhs.m_ptr); }
 
 		template < typename U >
-		bool	operator>= (const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr >= rhs.m_ptr); }
+		bool	operator>= (const RAIterator<std::random_access_iterator_tag, U> &rhs) { return (this->m_ptr >= rhs.m_ptr); }
 
 		template < typename U >
-		bool operator== (const RAIterator<random_access_iterator_tag, U> &rhs) {return (this->m_ptr == rhs.m_ptr); }
+		bool operator== (const RAIterator<std::random_access_iterator_tag, U> &rhs) {return (this->m_ptr == rhs.m_ptr); }
 
 		template < typename U >
-		bool operator!= (const RAIterator<random_access_iterator_tag, U> &rhs) { return (this->m_ptr != rhs.m_ptr); }
+		bool operator!= (const RAIterator<std::random_access_iterator_tag, U> &rhs) { return (this->m_ptr != rhs.m_ptr); }
 
 //		friend class vector;
 	protected:
 		pointer m_ptr;
 	};
-
 
 }
 #endif

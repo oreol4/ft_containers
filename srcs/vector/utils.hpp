@@ -2,13 +2,13 @@
 # define UTILS_HPP
 
 #include <cstddef>
-#include "Vector.hpp"
-#include "utils.hpp"
-struct input_iterator_tag{};
-struct output_iterator_tag{};
-struct forward_iterator_tag: public input_iterator_tag{};
-struct bidirection_iterator_tag:public forward_iterator_tag {};
-struct random_access_iterator_tag:public bidirection_iterator_tag{};
+#include "vector.hpp"
+
+//struct input_iterator_tag{};
+//struct output_iterator_tag{};
+//struct forward_iterator_tag: public input_iterator_tag{};
+//struct bidirection_iterator_tag:public forward_iterator_tag {};
+//struct random_access_iterator_tag:public bidirection_iterator_tag{};
 
 namespace  ft {
 
@@ -27,7 +27,7 @@ namespace  ft {
 		typedef ptrdiff_t difference_type;
 		typedef T *pointer;
 		typedef T &reference;
-		typedef random_access_iterator_tag iterator_category;
+		typedef std::random_access_iterator_tag iterator_category;
 	};
 
 
