@@ -15,7 +15,6 @@ namespace ft {
 		typedef typename ft::iterator_traits<Iterator>::pointer pointer;
 		typedef typename ft::iterator_traits<Iterator>::reference reference;
 
-
 		reverse_iterator() : m_ptr(NULL) {};
 
 		explicit reverse_iterator(iterator_type it) : m_ptr(it) {};

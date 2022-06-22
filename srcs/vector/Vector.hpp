@@ -127,12 +127,13 @@ namespace ft {
 
 		void resize (size_type n, value_type val = value_type()) {
 			if (n < sz) {
-				for (size_t i = n; i < sz;i++) {
+				for (size_t i = n; i < sz; i++) {
 					allocator.destroy(_arr + i);
 				}
-				sz = n;
-			} else if (n > sz) {
+			} else if (n > sz && n < max_size()) {
 				if (n > cap)
+					reserve(cap * 2);
+				else
 					reserve(n);
 				for (size_t i = sz; i < n; i++) {
 					allocator.construct(_arr + i, val);
@@ -168,15 +169,18 @@ namespace ft {
 //		}; // ????
 
 		void	assign(size_type n, const value_type& val) {
-			if (n > cap) {
-				resize(n);
+			for (size_t i = 0;i < sz; i++) {
+				allocator.destroy(_arr + i);
 			}
-			else if (n < sz) {
-				resize(n);
+			if (n > cap) {
+				allocator.deallocate(_arr, cap);
+				_arr = allocator.allocate(n);
+				cap = n;
 			}
 			for (size_t i = 0;i < n; i++) {
 				*(_arr + i) = val;
 			}
+			sz = n;
 		};
 //
 		const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
