@@ -2,7 +2,7 @@
 # define UTILS_HPP
 
 #include <cstddef>
-#include "vector.hpp"
+#include "Vector.hpp"
 
 //struct input_iterator_tag{};
 //struct output_iterator_tag{};
@@ -12,7 +12,7 @@
 
 namespace  ft {
 
-	template<typename Iter>
+	template < typename Iter >
 	struct iterator_traits {
 		typedef typename Iter::value_type value_type;
 		typedef typename Iter::difference_type difference_type;
