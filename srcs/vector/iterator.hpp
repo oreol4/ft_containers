@@ -2,7 +2,7 @@
 # define ITERATOR_HPP
 
 #include "utils.hpp"
-#include "vector.hpp"
+#include "Vector.hpp"
 namespace ft {
 
 	template < typename Category , typename RAI, typename Distance = ptrdiff_t,
@@ -11,7 +11,7 @@ namespace ft {
 	public:
 		//							MEMBER TYPES			//
 		typedef RAI	value_type;
-		typedef Distance	different_type;
+		typedef Distance	difference_type;
 		typedef Pointer		pointer;
 		typedef Reference	reference;
 		typedef Category	iterator_category;
@@ -27,19 +27,19 @@ namespace ft {
 
 		RAIterator		operator++(int) { RAIterator	tmp(*this); this->m_ptr++; return(tmp); }
 
-		RAIterator&		operator--() {this->m_ptr--; return RAIterator(*this); }
+		RAIterator&		operator--() {this->m_ptr--; return *this; }
 
 		RAIterator&		operator--(int) { RAIterator	tmp(*this); this->m_ptr--; return (tmp);}
 
-		RAIterator		operator-(different_type n) const { return RAIterator(this->m_ptr - n);}
+		RAIterator		operator-(difference_type n) const { return RAIterator(this->m_ptr - n);}
 
-		RAIterator		operator+(different_type n) const { return RAIterator(this->m_ptr + n);}
+		RAIterator		operator+(difference_type n) const { return RAIterator(this->m_ptr + n);}
 
-		reference 		operator[](different_type n) { return *(this + n); } // bad work
+		reference 		operator[](difference_type n) { return *(this + n); } // bad work
 
-		RAIterator		operator+=(different_type n) { return RAIterator(this->m_ptr += n); }
+		RAIterator		operator+=(difference_type n) { return RAIterator(this->m_ptr += n); }
 
-		RAIterator		operator-=(different_type n) { return RAIterator(this->m_ptr -= n);}
+		RAIterator		operator-=(difference_type n) { return RAIterator(this->m_ptr -= n);}
 
 		reference		operator*() { return (*m_ptr);}
 
