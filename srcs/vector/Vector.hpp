@@ -24,51 +24,50 @@ namespace ft {
 		// iterators member types
 		typedef typename allocator_type::size_type 									size_type;
 		typedef typename allocator_type::difference_type 							difference_type;
-		typedef RAIterator< std::random_access_iterator_tag, value_type >				iterator; // can use pointer from allocator
-		typedef RAIterator< std::random_access_iterator_tag, const value_type>			const_iterator;
+		typedef ft::RAIterator< std::random_access_iterator_tag, value_type >				iterator; // can use pointer from allocator
+		typedef ft::RAIterator< std::random_access_iterator_tag, const value_type>			const_iterator;
 //		typedef reverse_iterator<iterator>											reverse_iterator;
+		typedef ft::reverse_iterator<iterator>											reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 		// iterators member types
 
-		explicit vector(const allocator_type& alloc = allocator_type()):_arr(nullptr), sz(0), cap(0),
+		vector(const allocator_type& alloc = allocator_type()):_arr(nullptr), sz(0), cap(0),
 			allocator(alloc){};
-
-		explicit vector(size_type n, const value_type& val = value_type(),
+//
+		vector(size_type n, const value_type& val = value_type(),
 			   const allocator_type& alloc = allocator_type()):_arr(0), sz(n),cap(n),allocator(alloc) {
-			   //: sz(n), cap(n),
-//			   allocator(alloc){
-//			_arr = allocator.allocate(n);
-//			for (size_t i = 0; i < n; i++) { allocator.construct(_arr + i, val);
 				_arr = allocator.allocate(n);
-				try
-				{
-					for (size_type i = 0; i < sz; i++)
-						allocator.construct(_arr + i, val);
+				for (size_type i = 0;i < n; i++) {
+					allocator.construct(_arr + i, val);
 				}
-				catch (...)
-				{
-					allocator.deallocate(_arr, n);
-					_arr = nullptr;
-					throw std::logic_error("Error: _alloc failed");
-				}
+				sz = n;
+				cap = n;
 		}
-//		template < typename InputIterator >
-//			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0), allocator(alloc) {
-//			sz = ft::distance(first, last);
-//			cap = sz;
-//			_arr = allocator.allocate(cap);
-//			for (;first != last;first++) {
-//				allocator.construct(_arr + first);
-//			}
-//		}
-		~vector(){
-			for (size_t i = 0; i < cap; i++) {
-				allocator.destroy(_arr + i);
+		template < typename InputIterator >
+			vector(InputIterator first, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0), allocator(alloc) {
+			sz = ft::distance(first, last);
+			cap = sz;
+			T *newPtr;
+
+			newPtr = allocator.allocate(sz);
+			for (size_t i = 0;i < sz; i++) {allocator.construct(newPtr + i);}
+			size_t i = 0;
+			while (first != last) {
+				newPtr[i] = *first;
+				first++;
+				i++;
 			}
+			_arr = newPtr;
+		}
+
+		~vector(){
+			for (size_t i = 0;i < sz; i++)
+				allocator.destroy(_arr + i);
 			if (cap)
 				allocator.deallocate(_arr, cap);
 		}
 
-		vector(const vector<T> &rhs):_arr(rhs._arr), allocator(rhs.allocator), cap(rhs.cap), sz(rhs.sz){};
+		vector(const vector<T> &rhs):_arr(rhs._arr), sz(rhs.sz), cap(rhs.cap), allocator(rhs.allocator){};
 
 		void reserve(size_type n) {
 			if (n < cap) return;
@@ -88,7 +87,6 @@ namespace ft {
 		}
 
 		iterator insert (iterator position, const value_type& val) {
-			std::cout << sz << " " << cap << std::endl;
 			if (position == begin())
 			{
 				if (sz == cap)
@@ -114,19 +112,18 @@ namespace ft {
 			else if (position == end()) {
 				if (sz == cap)
 					reserve(cap * 2);
-
-				std::cout << "END " << val << std::endl;
 			}
 			return (iterator(_arr));
 		}
 
-//		void	dispVector() {
-//			ft::RAIterator<std::random_access_iterator_tag, T> ite = this->end();
-//			for (ft::RAIterator<std::random_access_iterator_tag, T> it = this->begin(); it < ite; it++) {
-//				std::cout << *it << " ";
-//			}
-//			std::cout << std::endl;
-//		}
+		void	dispVector() {
+			ft::RAIterator<std::random_access_iterator_tag, T> ite = this->end();
+			for (ft::RAIterator<std::random_access_iterator_tag, T> it = this->begin(); it < ite; it++) {
+				std::cout << *it << " ";
+			}
+			std::cout << std::endl;
+			std::cout << sz << " " << cap <<std::endl;
+		}
 
 		void resize (size_type n, value_type val = value_type()) {
 			if (n < sz) {
@@ -167,7 +164,7 @@ namespace ft {
 //		{
 //			(void)first;
 //			(void)last;
-//			std::cout << "AA" << std::endl;
+////			std::cout << "AA" << std::endl;
 //		}; // ????
 
 		void	assign(size_type n, const value_type& val) {
@@ -182,6 +179,13 @@ namespace ft {
 			}
 		};
 //
+		const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
+
+		reverse_iterator	rbegin() { return reverse_iterator(end());}
+
+		const_reverse_iterator rend() const {return const_reverse_iterator (_arr);}
+
+		reverse_iterator	rend()	{return reverse_iterator(_arr);}
 
 		iterator 			begin() { return (iterator (_arr));}
 
