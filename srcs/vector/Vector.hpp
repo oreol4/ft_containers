@@ -2,12 +2,13 @@
 # define VECTOR_HPP
 #include <iostream>
 #include <exception>
-#include <vector>
+//#include <vector>
 #include "iterator.hpp"
 #include <memory>
 #include <cassert>
 #include <iterator>
 #include "utils.hpp"
+#include "reverse_iterator.hpp"
 namespace ft {
 
 	template<typename T, typename Allocator = std::allocator <T> >
@@ -23,28 +24,42 @@ namespace ft {
 		// iterators member types
 		typedef typename allocator_type::size_type 									size_type;
 		typedef typename allocator_type::difference_type 							difference_type;
-		typedef RAIterator< random_access_iterator_tag, value_type >				iterator; // can use pointer from allocator
-		typedef RAIterator< random_access_iterator_tag, const value_type>			const_iterator;
+		typedef RAIterator< std::random_access_iterator_tag, value_type >				iterator; // can use pointer from allocator
+		typedef RAIterator< std::random_access_iterator_tag, const value_type>			const_iterator;
+//		typedef reverse_iterator<iterator>											reverse_iterator;
 		// iterators member types
 
-		explicit vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
-			allocator(alloc){}
+		explicit vector(const allocator_type& alloc = allocator_type()):_arr(nullptr), sz(0), cap(0),
+			allocator(alloc){};
 
 		explicit vector(size_type n, const value_type& val = value_type(),
-			   const allocator_type& alloc = allocator_type()): sz(n), cap(n),
-			   allocator(alloc){
-			_arr = allocator.allocate(n);
-			for (size_t i = 0; i < n; i++) { allocator.construct(_arr + i, val);}
+			   const allocator_type& alloc = allocator_type()):_arr(0), sz(n),cap(n),allocator(alloc) {
+			   //: sz(n), cap(n),
+//			   allocator(alloc){
+//			_arr = allocator.allocate(n);
+//			for (size_t i = 0; i < n; i++) { allocator.construct(_arr + i, val);
+				_arr = allocator.allocate(n);
+				try
+				{
+					for (size_type i = 0; i < sz; i++)
+						allocator.construct(_arr + i, val);
+				}
+				catch (...)
+				{
+					allocator.deallocate(_arr, n);
+					_arr = nullptr;
+					throw std::logic_error("Error: _alloc failed");
+				}
 		}
-		template < typename InputIterator >
-			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0), allocator(alloc) {
-			sz = ft::distance(first, last);
-			cap = sz;
-			_arr = allocator.allocate(cap);
-			for (;first != last;first++) {
-				allocator.construct(_arr + *first);
-			}
-		}
+//		template < typename InputIterator >
+//			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0), allocator(alloc) {
+//			sz = ft::distance(first, last);
+//			cap = sz;
+//			_arr = allocator.allocate(cap);
+//			for (;first != last;first++) {
+//				allocator.construct(_arr + first);
+//			}
+//		}
 		~vector(){
 			for (size_t i = 0; i < cap; i++) {
 				allocator.destroy(_arr + i);
@@ -53,13 +68,7 @@ namespace ft {
 				allocator.deallocate(_arr, cap);
 		}
 
-		vector(const vector<T> &rhs):_arr(rhs._arr), allocator(rhs.allocator), cap(rhs.cap), sz(rhs.sz)
-		{
-//			this->_arr = rhs._arr;
-//			this->allocator = rhs.allocator;
-//			this->cap = rhs.cap;
-//			this->sz = rhs.sz;
-		}
+		vector(const vector<T> &rhs):_arr(rhs._arr), allocator(rhs.allocator), cap(rhs.cap), sz(rhs.sz){};
 
 		void reserve(size_type n) {
 			if (n < cap) return;
@@ -78,13 +87,46 @@ namespace ft {
 			cap = n;
 		}
 
-		void	dispVector() {
-			ft::RAIterator<random_access_iterator_tag, T> ite = this->end();
-			for (ft::RAIterator<random_access_iterator_tag, T> it = this->begin(); it < ite; it++) {
-				std::cout << *it << " ";
+		iterator insert (iterator position, const value_type& val) {
+			std::cout << sz << " " << cap << std::endl;
+			if (position == begin())
+			{
+				if (sz == cap)
+					reserve(cap * 2);
+				T *newPtr;
+				newPtr = allocator.allocate(cap);
+				sz++;
+				allocator.construct(newPtr, val);
+				try {
+					std::uninitialized_copy(_arr, _arr + sz, newPtr + 1);
+				} catch(...) {
+					allocator.deallocate(newPtr, cap);
+				}
+				allocator.deallocate(_arr, sz);
+				for (size_t i = 0;i < sz; i++) {
+					allocator.destroy(_arr + i);
+				}
+				_arr = newPtr;
+				for (size_t i = 0;i < sz; i++) {
+					std::cout << _arr[i] << std::endl;
+				}
 			}
-			std::cout << std::endl;
+			else if (position == end()) {
+				if (sz == cap)
+					reserve(cap * 2);
+
+				std::cout << "END " << val << std::endl;
+			}
+			return (iterator(_arr));
 		}
+
+//		void	dispVector() {
+//			ft::RAIterator<std::random_access_iterator_tag, T> ite = this->end();
+//			for (ft::RAIterator<std::random_access_iterator_tag, T> it = this->begin(); it < ite; it++) {
+//				std::cout << *it << " ";
+//			}
+//			std::cout << std::endl;
+//		}
 
 		void resize (size_type n, value_type val = value_type()) {
 			if (n < sz) {
@@ -97,8 +139,8 @@ namespace ft {
 					reserve(n);
 				for (size_t i = sz; i < n; i++) {
 					allocator.construct(_arr + i, val);
-					++sz;
 				}
+				sz = n;
 			}
 		}
 
@@ -119,9 +161,35 @@ namespace ft {
 			sz--;
 		}
 
-		iterator 			begin() { return (iterator(_arr));}
 
-		iterator			end() { return (iterator(_arr + sz)); }
+//		template < typename InputIterator >
+//		void	assign(InputIterator first, InputIterator last)
+//		{
+//			(void)first;
+//			(void)last;
+//			std::cout << "AA" << std::endl;
+//		}; // ????
+
+		void	assign(size_type n, const value_type& val) {
+			if (n > cap) {
+				resize(n);
+			}
+			else if (n < sz) {
+				resize(n);
+			}
+			for (size_t i = 0;i < n; i++) {
+				*(_arr + i) = val;
+			}
+		};
+//
+
+		iterator 			begin() { return (iterator (_arr));}
+
+		const_iterator		begin() const {return(const_iterator (_arr));} ;
+
+		iterator			end() { return (iterator (_arr + sz)); }
+
+		const_iterator 		end() const {return (const_iterator (_arr + sz));}
 
 		size_type 			size() const { return (this->sz);}
 
@@ -146,7 +214,7 @@ namespace ft {
 		const_reference 	back() const {return *(_arr + sz - 1); }
 
 		template < typename value_type, typename Alloc >
-		friend bool operator== (ft::vector<value_type , Alloc>& rhs, ft::vector<value_type, Alloc>& lhs);
+		friend bool operator== (const ft::vector<value_type , Alloc>& rhs, const ft::vector<value_type, Alloc>& lhs);
 
 		template < typename value_type , typename Alloc >
 		friend bool operator!= (const ft::vector<value_type, Alloc>& rhs, const ft::vector<value_type, Alloc>& lhs);
@@ -154,14 +222,14 @@ namespace ft {
 		template < typename value_type , typename Alloc >
 		friend bool operator< (const ft::vector<value_type, Alloc>& rhs, const ft::vector<value_type, Alloc>& lhs);
 
-//		template < typename T, typename Alloc >
-//		friend bool operator<= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs);
-//
-//		template < typename T, typename Alloc >
-//		friend bool operator> (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs);
-//
-//		template < typename T, typename Alloc >
-//		friend bool operator>= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs);
+		template < typename value_type , typename Alloc >
+		friend bool operator<= (const ft::vector<value_type, Alloc>& rhs, const ft::vector<value_type, Alloc>& lhs);
+
+		template < typename value_type , typename Alloc >
+		friend bool operator> (const ft::vector<value_type , Alloc>& rhs, const ft::vector<value_type , Alloc>& lhs);
+
+		template < typename value_type , typename Alloc >
+		friend bool operator>= (const ft::vector<value_type , Alloc>& rhs, const ft::vector<value_type , Alloc>& lhs);
 
 	protected:
 		pointer _arr;
@@ -190,36 +258,36 @@ namespace ft {
 	}
 
 	template < typename T, typename Alloc >
-	bool operator== (ft::vector<T, Alloc>& rhs, ft::vector<T, Alloc>& lhs) {
+	bool operator== (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
 		return (rhs.size() == lhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()) ? true : false);
 	}
 
 	template < typename T, typename Alloc >
-	bool operator!= (ft::vector<T, Alloc>& rhs, ft::vector<T, Alloc>& lhs) {
+	bool operator!= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
 		if (rhs.size() != lhs.size() || !ft::equal(lhs.begin(), lhs.end(), rhs.begin()))
 			return (true);
 		return (false);
 	}
 
 	template < typename T, typename Alloc >
-	bool operator< (ft::vector<T, Alloc>& rhs, ft::vector<T, Alloc>& lhs) {
+	bool operator< (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
 		return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
-//
-//	template < typename T, typename Alloc >
-//	bool operator<= (ft::vector<T, Alloc>& rhs, ft::vector<T, Alloc>& lhs) {
-//
-//	}
-//
-//	template < typename T, typename Alloc >
-//	bool operator> (ft::vector<T, Alloc>& rhs, ft::vector<T, Alloc>& lhs) {
-//
-//	}
-//
-//	template < typename T, typename Alloc >
-//	bool operator>= (ft::vector<T, Alloc>& rhs, ft::vector<T, Alloc>& lhs) {
-//
-//	}
+
+	template < typename T, typename Alloc >
+	bool operator<= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
+		return (!(lhs < rhs));
+	}
+
+	template < typename T, typename Alloc >
+	bool operator> (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
+		return (rhs < lhs);
+	}
+
+	template < typename T, typename Alloc >
+	bool operator>= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
+		return (!(lhs < rhs));
+	}
 }
 
 #endif
