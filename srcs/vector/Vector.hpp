@@ -87,33 +87,72 @@ namespace ft {
 		}
 
 		iterator insert (iterator position, const value_type& val) {
-			if (position == begin())
-			{
-				if (sz == cap)
-					reserve(cap * 2);
-				T *newPtr;
+			if (position < this->begin() || position > this->begin())
+				std::logic_error("error");
+			size_t distValueAppend = 0;
+			size_t newCap = 0;
+			size_t i = 0;
+			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
+			T *newPtr = NULL;
+			if (sz == cap) {
+				newPtr = allocator.allocate(cap * 2);
+				newCap = cap * 2;
+			}
+			else {
 				newPtr = allocator.allocate(cap);
-				sz++;
-				allocator.construct(newPtr, val);
-				try {
-					std::uninitialized_copy(_arr, _arr + sz, newPtr + 1);
-				} catch(...) {
-					allocator.deallocate(newPtr, cap);
+				newCap = cap;
+			}
+			if (distValueAppend == 0)
+				allocator.construct(newPtr + i++, val);
+			else if (distValueAppend == sz)
+				allocator.construct(newPtr + sz, val);
+			else
+				allocator.construct(newPtr + distValueAppend, val);
+			iterator it = begin();
+			iterator ite = end();
+			for (;it != ite;it++) {
+				if (i == distValueAppend) i++;
+				if (i != distValueAppend) allocator.construct(newPtr + i++, *it);
+			}
+			allocator.deallocate(_arr, cap);
+			for (size_t i = 0;i < sz; i++)
+				allocator.destroy(_arr + i);
+			_arr = newPtr;
+			cap = newCap;
+			sz++;
+			return (begin() + distValueAppend); // ?
+		}
+
+		void insert (iterator position, size_type n, const value_type& val) {
+			if (position < this->begin() || position > this->end())
+				std::logic_error("error");
+			size_t distValueAppend = 0;
+			size_t newCap = 0;
+			size_t i = 0;
+			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
+			T *newPtr = NULL;
+			if (sz == cap) {
+				newPtr = allocator.allocate(cap * 2 + n);
+				newCap = cap * 2 + n;
+			} else {
+				newPtr = allocator.allocate(cap + n);
+				newCap = cap + n;
+			}
+			if (distValueAppend == 0) {
+				for (;i < n; i++) {
+					allocator.construct(newPtr + i, val);
 				}
-				allocator.deallocate(_arr, sz);
-				for (size_t i = 0;i < sz; i++) {
-					allocator.destroy(_arr + i);
-				}
-				_arr = newPtr;
-				for (size_t i = 0;i < sz; i++) {
-					std::cout << _arr[i] << std::endl;
+			} else if (distValueAppend == sz) {
+				for (;i < n; i++) {
+					allocator.construct(newPtr + sz + i, val);
 				}
 			}
-			else if (position == end()) {
-				if (sz == cap)
-					reserve(cap * 2);
-			}
-			return (iterator(_arr));
+			allocator.deallocate(_arr, cap);
+			for (size_t i = 0;i < sz; i++)
+				allocator.destroy(_arr + i);
+			_arr = newPtr;
+			cap = newCap;
+			sz += n;
 		}
 
 		void	dispVector() {
@@ -130,11 +169,13 @@ namespace ft {
 				for (size_t i = n; i < sz; i++) {
 					allocator.destroy(_arr + i);
 				}
-			} else if (n > sz && n < max_size()) {
-				if (n > cap)
+			}else if (n > sz && n < max_size()) {
+
+				if (n > sz && n <= cap * 2) {
 					reserve(cap * 2);
-				else
+				}else if (n > cap * 2) {
 					reserve(n);
+				}
 				for (size_t i = sz; i < n; i++) {
 					allocator.construct(_arr + i, val);
 				}
@@ -182,7 +223,29 @@ namespace ft {
 			}
 			sz = n;
 		};
-//
+
+		template < typename InputIterator >
+
+		void	assign(InputIterator first, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
+			size_t i = 0;
+			sz = ft::distance(first, last);
+			cap = sz;
+			_arr = allocator.allocate(sz);
+			while (first != last) {
+				allocator.construct(_arr + i, *first);
+				first++;
+				i++;
+			}
+		}
+
+
+		void	clear() {
+			for (size_t i = 0;i < sz; i++) {
+				allocator.destroy(_arr + i);
+			}
+			sz = 0;
+		}
+
 		const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
 
 		reverse_iterator	rbegin() { return reverse_iterator(end());}
@@ -279,12 +342,12 @@ namespace ft {
 
 	template < typename T, typename Alloc >
 	bool operator< (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
-		return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template < typename T, typename Alloc >
 	bool operator<= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
-		return (!(lhs < rhs));
+		return (!(rhs < lhs));
 	}
 
 	template < typename T, typename Alloc >
