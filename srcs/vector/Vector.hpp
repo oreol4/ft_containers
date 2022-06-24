@@ -134,7 +134,7 @@ namespace ft {
 			if (sz == cap) {
 				newPtr = allocator.allocate(cap * 2 + n);
 				newCap = cap * 2 + n;
-			} else {
+			} else if (sz + n > cap){
 				newPtr = allocator.allocate(cap + n);
 				newCap = cap + n;
 			}
@@ -143,8 +143,24 @@ namespace ft {
 					allocator.construct(newPtr + i, val);
 				}
 			} else if (distValueAppend == sz) {
+				std::cout << distValueAppend << " " << sz << std::endl;
 				for (;i < n; i++) {
 					allocator.construct(newPtr + sz + i, val);
+				}
+			} else {
+				size_t razmer = sz + n;
+				std::cout << n << std::endl;
+				while (i < razmer) {
+					if (i == distValueAppend){
+						size_t j = 0;
+						while (j < n) {
+							newPtr[i + j] = val;
+							j++;
+						}
+						i += j;
+					} else
+						newPtr[i] = _arr[i];
+					i++;
 				}
 			}
 			allocator.deallocate(_arr, cap);
