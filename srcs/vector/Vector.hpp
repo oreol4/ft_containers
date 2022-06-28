@@ -61,10 +61,9 @@ namespace ft {
 		}
 
 		~vector(){
-			for (size_t i = 0;i < sz; i++)
+			allocator.deallocate(_arr, sz);
+			for (size_t i = 0; i < sz; i++)
 				allocator.destroy(_arr + i);
-			if (cap)
-				allocator.deallocate(_arr, cap);
 		}
 
 		vector(const vector<T> &rhs):_arr(rhs._arr), sz(rhs.sz), cap(rhs.cap), allocator(rhs.allocator){};
@@ -87,88 +86,95 @@ namespace ft {
 		}
 
 		iterator insert (iterator position, const value_type& val) {
-			if (position < this->begin() || position > this->begin())
-				std::logic_error("error");
+//			if (position < this->begin() || position > this->begin())
+//				std::logic_error("error");
 			size_t distValueAppend = 0;
-			size_t newCap = 0;
+//			size_t newCap = 0;
 			size_t i = 0;
 			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
-			T *newPtr = NULL;
-			if (sz == cap) {
-				newPtr = allocator.allocate(cap * 2);
-				newCap = cap * 2;
-			}
-			else {
-				newPtr = allocator.allocate(cap);
-				newCap = cap;
-			}
-			if (distValueAppend == 0)
-				allocator.construct(newPtr + i++, val);
-			else if (distValueAppend == sz)
-				allocator.construct(newPtr + sz, val);
-			else
-				allocator.construct(newPtr + distValueAppend, val);
-			iterator it = begin();
-			iterator ite = end();
-			for (;it != ite;it++) {
-				if (i == distValueAppend) i++;
-				if (i != distValueAppend) allocator.construct(newPtr + i++, *it);
-			}
-			allocator.deallocate(_arr, cap);
-			for (size_t i = 0;i < sz; i++)
-				allocator.destroy(_arr + i);
-			_arr = newPtr;
-			cap = newCap;
-			sz++;
+			while (i < sz && i != distValueAppend)
+				i++;
+			if (i )
+//			T *newPtr = NULL;
+//			if (sz == cap) {
+//				newPtr = allocator.allocate(cap * 2);
+//				newCap = cap * 2;
+//			}
+//			else {
+//				newPtr = allocator.allocate(cap);
+//				newCap = cap;
+//			}
+//			if (distValueAppend == 0)
+//				allocator.construct(newPtr + i++, val);
+//			else if (distValueAppend == sz)
+//				allocator.construct(newPtr + sz, val);
+//			else
+//				allocator.construct(newPtr + distValueAppend, val);
+//			iterator it = begin();
+//			iterator ite = end();
+//			for (;it != ite;it++) {
+//				if (i == distValueAppend) i++;
+//				if (i != distValueAppend) allocator.construct(newPtr + i++, *it);
+//			}
+//			allocator.deallocate(_arr, cap);
+//			for (size_t i = 0;i < sz; i++)
+//				allocator.destroy(_arr + i);
+//			_arr = newPtr;
+//			cap = newCap;
+//			sz++;
 			return (begin() + distValueAppend); // ?
 		}
 
 		void insert (iterator position, size_type n, const value_type& val) {
-			if (position < this->begin() || position > this->end())
-				std::logic_error("error");
-			size_t distValueAppend = 0;
-			size_t newCap = 0;
-			size_t i = 0;
-			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
-			T *newPtr = NULL;
-			if (sz == cap) {
-				newPtr = allocator.allocate(cap * 2 + n);
-				newCap = cap * 2 + n;
-			} else if (sz + n > cap){
-				newPtr = allocator.allocate(cap + n);
-				newCap = cap + n;
+			while(n > 0) {
+				position = insert(position, val);
+				n--;
 			}
-			if (distValueAppend == 0) {
-				for (;i < n; i++) {
-					allocator.construct(newPtr + i, val);
-				}
-			} else if (distValueAppend == sz) {
-				std::cout << distValueAppend << " " << sz << std::endl;
-				for (;i < n; i++) {
-					allocator.construct(newPtr + sz + i, val);
-				}
-			} else {
-				size_t razmer = sz + n;
-				std::cout << n << std::endl;
-				while (i < razmer) {
-					if (i == distValueAppend){
-						size_t j = 0;
-						while (j < n) {
-							newPtr[i + j] = val;
-							j++;
-						}
-						i += j;
-					} else
-						newPtr[i] = _arr[i];
-					i++;
-				}
-			}
-			allocator.deallocate(_arr, cap);
-			for (size_t i = 0;i < sz; i++)
-				allocator.destroy(_arr + i);
-			_arr = newPtr;
-			cap = newCap;
-			sz += n;
+//			if (position < this->begin() || position > this->end())
+//				std::logic_error("error");
+//			size_t distValueAppend = 0;
+//			size_t newCap = 0;
+//			size_t i = 0;
+//			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
+//			T *newPtr = NULL;
+//			if (sz == cap) {
+//				newPtr = allocator.allocate(cap * 2 + n);
+//				newCap = cap * 2 + n;
+//			} else if (sz + n > cap){
+//				newPtr = allocator.allocate(cap + n);
+//				newCap = cap + n;
+//			}
+//			if (distValueAppend == 0) {
+//				for (;i < n; i++) {
+//					allocator.construct(newPtr + i, val);
+//				}
+//			} else if (distValueAppend == sz) {
+//				std::cout << distValueAppend << " " << sz << std::endl;
+//				for (;i < n; i++) {
+//					allocator.construct(newPtr + sz + i, val);
+//				}
+//			} else {
+//				size_t razmer = sz + n;
+//				std::cout << n << std::endl;
+//				while (i < razmer) {
+//					if (i == distValueAppend){
+//						size_t j = 0;
+//						while (j < n) {
+//							newPtr[i + j] = val;
+//							j++;
+//						}
+//						i += j;
+//					} else
+//						newPtr[i] = _arr[i];
+//					i++;
+//				}
+//			}
+//			allocator.deallocate(_arr, cap);
+//			for (size_t i = 0;i < sz; i++)
+//				allocator.destroy(_arr + i);
+//			_arr = newPtr;
+//			cap = newCap;
+//			sz += n;
 		}
 
 		void	dispVector() {
@@ -186,17 +192,26 @@ namespace ft {
 					allocator.destroy(_arr + i);
 				}
 			}else if (n > sz && n < max_size()) {
-
-				if (n > sz && n <= cap * 2) {
+				if (n > sz && n <= cap * 2)
 					reserve(cap * 2);
-				}else if (n > cap * 2) {
+				else if (n > cap * 2)
 					reserve(n);
-				}
 				for (size_t i = sz; i < n; i++) {
 					allocator.construct(_arr + i, val);
 				}
 				sz = n;
 			}
+		}
+
+		iterator	erase(iterator position) {
+			iterator start = position;
+			allocator.destroy(&(*position));
+			while (start + 1 != end()) {
+				*(start) = *(start + 1);
+				start++;
+			}
+			sz--;
+			return iterator(position);
 		}
 
 		void push_back (const value_type& val) {
@@ -216,7 +231,6 @@ namespace ft {
 			sz--;
 		}
 
-
 //		template < typename InputIterator >
 //		void	assign(InputIterator first, InputIterator last)
 //		{
@@ -226,14 +240,7 @@ namespace ft {
 //		}; // ????
 
 		void	assign(size_type n, const value_type& val) {
-			for (size_t i = 0;i < sz; i++) {
-				allocator.destroy(_arr + i);
-			}
-			if (n > cap) {
-				allocator.deallocate(_arr, cap);
-				_arr = allocator.allocate(n);
-				cap = n;
-			}
+			reserve(n);
 			for (size_t i = 0;i < n; i++) {
 				*(_arr + i) = val;
 			}
@@ -243,6 +250,13 @@ namespace ft {
 		template < typename InputIterator >
 
 		void	assign(InputIterator first, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) {
+			if (sz > 0)
+			{
+				allocator.deallocate(_arr, sz);
+				for (size_t i = 0; i < sz;i++) {
+					allocator.destroy(_arr + i);
+				}
+			}
 			size_t i = 0;
 			sz = ft::distance(first, last);
 			cap = sz;
@@ -254,12 +268,21 @@ namespace ft {
 			}
 		}
 
-
 		void	clear() {
 			for (size_t i = 0;i < sz; i++) {
 				allocator.destroy(_arr + i);
 			}
 			sz = 0;
+		}
+
+		void	swap(vector<T> &x) {
+			vector<int>	tmp;
+			tmp.assign(x.begin(), x.end());
+			x.assign(this->begin(), this->end());
+			this->assign(tmp.begin(), tmp.end());
+			this->sz = tmp.sz;
+			this->cap = tmp.cap;
+
 		}
 
 		const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}

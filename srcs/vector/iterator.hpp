@@ -14,6 +14,7 @@ namespace ft {
 		typedef Distance	difference_type;
 		typedef Pointer		pointer;
 		typedef Reference	reference;
+
 		typedef Category	iterator_category;
 
 		//							MEMBER OPERATORS		//
@@ -32,6 +33,11 @@ namespace ft {
 		RAIterator&		operator--(int) { RAIterator	tmp(*this); this->m_ptr--; return (tmp);}
 
 		RAIterator		operator-(difference_type n) const { return RAIterator(this->m_ptr - n);}
+
+
+		difference_type operator-(RAIterator	&iter) {
+			return this->m_ptr - iter.m_ptr;
+		}
 
 		RAIterator		operator+(difference_type n) const { return RAIterator(this->m_ptr + n);}
 

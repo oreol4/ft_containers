@@ -10,56 +10,93 @@
 
 
 int main() {
-	std::vector<int>	v1;
-	ft::vector<int>		f1;
-	for (int i = 0;i < 6; i++) {
-		f1.push_back(2);
-		v1.push_back(2);
+
+	ft::vector<int>		v2;
+
+
+
+	for (size_t i = 0;i < 10;i++) {
+		v2.push_back(i * 2);
 	}
-//	std::cout << f1.size() << std::endl;
-//	std::cout << v1.size() << std::endl;
-	ft::vector<int>::iterator it = f1.end();
-//	std::vector<int>::iterator vit = v1.begin();
-//	vit = v1.insert(vit, 444);
-//	std::cout << *vit << std::endl;
-//	for (size_t i = 0;i < v1.size(); i++) {
-//		std::cout << v1[i] << " ";
+	ft::vector<int>::iterator it = v2.begin() + 2;
+	v2.insert(it, 4444);
+	for (size_t i = 0;i < v2.size();i++) {
+		std::cout << v2[i] << " ";
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	ft::vector<int>		v4;
+//	std::vector<int>::iterator ft;
+//	std::vector<int>::iterator fte;
+	//ft::vector<int>::iterator it;
+	//ft::vector<int>::iterator ite;
+//	std::vector<int>::iterator f;
+//	std::vector<int> myvector;
+////	ft::vector<int>::iterator ite;
+//	for (int i = 0;i < 5;i++) {
+//		v2.push_back(i  *2);
+//		myvector.push_back(i * 2);
+////		v1.push_back(i  * 2);
+//	}
+//	it = v2.begin();
+//	ite = v2.end();
+////	f = myvector.end() - 1;
+//	v2.erase(it);
+////	myvector.erase(f);
+//	for (size_t i = 0;i < v2.size(); i++) {
+//		std::cout << v2[i] << " ";
+//	}
+//	std::vector<int> myvector;
+//	for (int i=1; i<=10; i++) myvector.push_back(i);
+//
+//	// erase the 6th element
+//	myvector.erase (myvector.begin()+5);
+//
+//	// erase the first 3 elements:
+//	std::vector<int>::iterator res;
+//	res = myvector.erase (myvector.begin(),myvector.begin()+3);
+//	std::cout << *res << std::endl;
+
+
+//	it = v2.begin();
+//	ite = v2.end();
+//	ft = v1.begin();
+//	fte = v1.end();
+////	v4.assign(it, ite);
+////	v3.assign(ft, fte);
+////	for (size_t i = 0;i < v2.size(); i++) {
+////		std::cout << v4[i] << " ";
+////	}
+//	std::cout << std::endl;
+////	for (size_t i = 0;i < v3.size(); i++) {
+////		std::cout << v3[i] << " ";
+////	}
+//	v2.swap(v4);
+//		for (size_t i = 0;i < v3.size(); i++) {
+//		std::cout << v4[i] << " ";
 //	}
 //	std::cout << std::endl;
-	f1.insert(it,4, 444);
-//	std::cout << *it << std::endl;
-//	it = f1.end();
-//	f1.insert(it, 444);
-	f1.dispVector();
-//	it = f1.end();
-//	f1.insert(it, 444);
-//	f1.dispVector();
-//	it = v1.begin();
-//	v1.insert(it, 444);
-//	it = v1.begin();
-//	v1.insert(it, 444);
-//	v1.insert(it, 444);
-//	std::cout << v1.size() << " " << v1.capacity() << std::endl;
-//	f1.insert(it, 444);
-//	ft::vector<int>		f4;
-//	ft::vector<int>::iterator it = f1.begin();
-//	ft::vector<int>::iterator ite = f1.end();
-//	f4.assign(it, ite);
-//	f4.dispVector();
-//	v1.resize(2000);
-//	f1.resize(2000);
-//	std::cout << v1.size() << " " << v1.capacity() << std::endl;
-//
-//	std::cout << f1.size() << " " << f1.capacity() << std::endl;
-//
-//	v1.resize(2);
-//	f1.resize(2);
-//	std::cout << v1.size() << " " << v1.capacity() << std::endl;
-//
-//	std::cout << f1.size() << " " << f1.capacity() << std::endl;
-//	v1.resize(200);
-//	f1.resize(200);
-//	std::cout << v1.size() << " " << v1.capacity() << std::endl;
-//
-//	std::cout << f1.size() << " " << f1.capacity() << std::endl;
+//	std::cout << v4.size() << " " << v4.capacity() << std::endl;
+//	std::cout << v3.size() << " " << v3.capacity() << std::endl;
 }
