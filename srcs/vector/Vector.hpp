@@ -86,43 +86,22 @@ namespace ft {
 		}
 
 		iterator insert (iterator position, const value_type& val) {
-//			if (position < this->begin() || position > this->begin())
-//				std::logic_error("error");
+			if (position < this->begin() || position > this->begin())
+				std::logic_error("error");
+			if (sz == cap)
+				reserve(cap * 2);
+			else if (cap == 0)
+				reserve(1);
 			size_t distValueAppend = 0;
-//			size_t newCap = 0;
 			size_t i = 0;
 			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
-			while (i < sz && i != distValueAppend)
-				i++;
-			if (i )
-//			T *newPtr = NULL;
-//			if (sz == cap) {
-//				newPtr = allocator.allocate(cap * 2);
-//				newCap = cap * 2;
-//			}
-//			else {
-//				newPtr = allocator.allocate(cap);
-//				newCap = cap;
-//			}
-//			if (distValueAppend == 0)
-//				allocator.construct(newPtr + i++, val);
-//			else if (distValueAppend == sz)
-//				allocator.construct(newPtr + sz, val);
-//			else
-//				allocator.construct(newPtr + distValueAppend, val);
-//			iterator it = begin();
-//			iterator ite = end();
-//			for (;it != ite;it++) {
-//				if (i == distValueAppend) i++;
-//				if (i != distValueAppend) allocator.construct(newPtr + i++, *it);
-//			}
-//			allocator.deallocate(_arr, cap);
-//			for (size_t i = 0;i < sz; i++)
-//				allocator.destroy(_arr + i);
-//			_arr = newPtr;
-//			cap = newCap;
-//			sz++;
-			return (begin() + distValueAppend); // ?
+			for (i = 0; distValueAppend + i != sz ;i++) {
+				allocator.construct(_arr + sz - i, *(_arr + sz - i - 1));
+				allocator.destroy(_arr + sz - i - 1);
+			}
+			allocator.construct(_arr + distValueAppend, val);
+			sz++;
+			return iterator(begin() + distValueAppend);
 		}
 
 		void insert (iterator position, size_type n, const value_type& val) {
@@ -130,51 +109,6 @@ namespace ft {
 				position = insert(position, val);
 				n--;
 			}
-//			if (position < this->begin() || position > this->end())
-//				std::logic_error("error");
-//			size_t distValueAppend = 0;
-//			size_t newCap = 0;
-//			size_t i = 0;
-//			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
-//			T *newPtr = NULL;
-//			if (sz == cap) {
-//				newPtr = allocator.allocate(cap * 2 + n);
-//				newCap = cap * 2 + n;
-//			} else if (sz + n > cap){
-//				newPtr = allocator.allocate(cap + n);
-//				newCap = cap + n;
-//			}
-//			if (distValueAppend == 0) {
-//				for (;i < n; i++) {
-//					allocator.construct(newPtr + i, val);
-//				}
-//			} else if (distValueAppend == sz) {
-//				std::cout << distValueAppend << " " << sz << std::endl;
-//				for (;i < n; i++) {
-//					allocator.construct(newPtr + sz + i, val);
-//				}
-//			} else {
-//				size_t razmer = sz + n;
-//				std::cout << n << std::endl;
-//				while (i < razmer) {
-//					if (i == distValueAppend){
-//						size_t j = 0;
-//						while (j < n) {
-//							newPtr[i + j] = val;
-//							j++;
-//						}
-//						i += j;
-//					} else
-//						newPtr[i] = _arr[i];
-//					i++;
-//				}
-//			}
-//			allocator.deallocate(_arr, cap);
-//			for (size_t i = 0;i < sz; i++)
-//				allocator.destroy(_arr + i);
-//			_arr = newPtr;
-//			cap = newCap;
-//			sz += n;
 		}
 
 		void	dispVector() {
@@ -183,7 +117,7 @@ namespace ft {
 				std::cout << *it << " ";
 			}
 			std::cout << std::endl;
-			std::cout << sz << " " << cap <<std::endl;
+//			std::cout << sz << " " << cap <<std::endl;
 		}
 
 		void resize (size_type n, value_type val = value_type()) {
@@ -204,15 +138,39 @@ namespace ft {
 		}
 
 		iterator	erase(iterator position) {
-			iterator start = position;
-			allocator.destroy(&(*position));
-			while (start + 1 != end()) {
-				*(start) = *(start + 1);
-				start++;
+			if (position < begin() || position > end())
+				std::logic_error("error");
+			if (position == end())
+				return end();
+			size_t dist = static_cast<size_t>(ft::distance(begin(), position));
+			allocator.destroy(_arr + dist);
+			size_t i = 0;
+			while(dist + i != sz - 1) {
+				allocator.construct(_arr + dist + i, *(_arr + dist + i + 1));
+				allocator.destroy(_arr + dist + i + 1);
+				++i;
 			}
 			sz--;
-			return iterator(position);
+			return iterator(begin() + dist);
 		}
+
+		iterator	erase(iterator first, iterator last) {
+			size_t dist = static_cast<size_t>(ft::distance(first, last));
+			size_t distTwo = static_cast<size_t>(ft::distance(begin(), first));
+			size_t delSymb = distTwo + distTwo;
+			std::cout << distTwo << " " << dist << std::endl;
+//			std::cout << dist << " " << distTwo << " " << ex << std::endl;
+
+
+			size_t i = 0;
+			for (i = distTwo;i < delSymb;i++) {
+				allocator.destroy(_arr + i);
+			}
+			sz -= dist;
+			i = 0;
+			while (distance + i < )
+			return iterator(begin() + dist);
+		};
 
 		void push_back (const value_type& val) {
 			if (sz == cap) {
@@ -299,7 +257,7 @@ namespace ft {
 
 		iterator			end() { return (iterator (_arr + sz)); }
 
-		const_iterator 		end() const {return (const_iterator (_arr + sz));}
+		const_iterator 		end() const { return (const_iterator (_arr + sz));}
 
 		size_type 			size() const { return (this->sz);}
 
