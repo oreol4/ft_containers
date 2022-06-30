@@ -261,9 +261,9 @@ namespace ft {
 
 		reference 			operator[](size_type n) { return (_arr[n]); }
 
-		reference 			at(size_type n) { return *(_arr + n);}
+		reference 			at(size_type n) { if (n >= sz) std::out_of_range("Bad index"); return *(_arr + n);}
 
-		const_reference 	at(size_type n) const { return *(_arr + n); }
+		const_reference 	at(size_type n) const { if (n >= sz) std::out_of_range("Bad index"); return *(_arr + n); }
 
 		reference			front() { return *(_arr); }
 
