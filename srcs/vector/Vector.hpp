@@ -31,10 +31,10 @@ namespace ft {
 		typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 		// iterators member types
 
-		vector(const allocator_type& alloc = allocator_type()):_arr(nullptr), sz(0), cap(0),
+		explicit vector(const allocator_type& alloc = allocator_type()):_arr(nullptr), sz(0), cap(0),
 			allocator(alloc){};
 //
-		vector(size_type n, const value_type& val = value_type(),
+		explicit vector(size_type n, const value_type& val = value_type(),
 			   const allocator_type& alloc = allocator_type()):_arr(0), sz(n),cap(n),allocator(alloc) {
 				_arr = allocator.allocate(n);
 				for (size_type i = 0;i < n; i++) {
@@ -61,13 +61,17 @@ namespace ft {
 		}
 
 		~vector(){
-			allocator.deallocate(_arr, sz);
 			for (size_t i = 0; i < sz; i++)
 				allocator.destroy(_arr + i);
+			if (_arr || cap)
+				allocator.deallocate(_arr, sz);
 		}
 
-		vector(const vector<T> &rhs):_arr(rhs._arr), sz(rhs.sz), cap(rhs.cap), allocator(rhs.allocator){};
-
+		vector(const vector<value_type> &rhs):_arr(rhs._arr), sz(rhs.sz), cap(rhs.cap), allocator(rhs.allocator){
+			_arr = allocator.allocate(rhs.sz);
+			for (size_t i = 0;i < rhs.sz; i++) { allocator.construct(_arr + i, *(rhs._arr + i));}
+		};
+		// in vector constructor ^^^^^^^^
 		void reserve(size_type n) {
 			if (n < cap) return;
 			T *newPtr;
@@ -117,7 +121,6 @@ namespace ft {
 				std::cout << *it << " ";
 			}
 			std::cout << std::endl;
-//			std::cout << sz << " " << cap <<std::endl;
 		}
 
 		void resize (size_type n, value_type val = value_type()) {
@@ -155,21 +158,21 @@ namespace ft {
 		}
 
 		iterator	erase(iterator first, iterator last) {
-			size_t dist = static_cast<size_t>(ft::distance(first, last));
-			size_t distTwo = static_cast<size_t>(ft::distance(begin(), first));
-			size_t delSymb = distTwo + distTwo;
-			std::cout << distTwo << " " << dist << std::endl;
-//			std::cout << dist << " " << distTwo << " " << ex << std::endl;
-
-
-			size_t i = 0;
-			for (i = distTwo;i < delSymb;i++) {
+			if (sz == 0)
+				return end();
+			size_t	deleteItems = static_cast<size_t>(ft::distance(first, last));
+			size_t	replaceLastItem = static_cast<size_t>(ft::distance(last, end()));
+			size_t 	startDeleteItems = static_cast<size_t>(ft::distance(begin(), first));
+			size_t 	addedItems = static_cast<size_t>(ft::distance(begin(), last));
+			for (size_t i = startDeleteItems;i < deleteItems;i++) {
 				allocator.destroy(_arr + i);
 			}
-			sz -= dist;
-			i = 0;
-			while (distance + i < )
-			return iterator(begin() + dist);
+			size_t i = 0;
+			for (;i < replaceLastItem;i++) {
+				allocator.construct(_arr + startDeleteItems + i, *(_arr + addedItems + i));
+			}
+			sz -= deleteItems;
+			return iterator(begin() + startDeleteItems);
 		};
 
 		void push_back (const value_type& val) {
@@ -188,14 +191,6 @@ namespace ft {
 			allocator.destroy(_arr + sz - 1);
 			sz--;
 		}
-
-//		template < typename InputIterator >
-//		void	assign(InputIterator first, InputIterator last)
-//		{
-//			(void)first;
-//			(void)last;
-////			std::cout << "AA" << std::endl;
-//		}; // ????
 
 		void	assign(size_type n, const value_type& val) {
 			reserve(n);
@@ -233,14 +228,11 @@ namespace ft {
 			sz = 0;
 		}
 
-		void	swap(vector<T> &x) {
-			vector<int>	tmp;
-			tmp.assign(x.begin(), x.end());
-			x.assign(this->begin(), this->end());
-			this->assign(tmp.begin(), tmp.end());
-			this->sz = tmp.sz;
-			this->cap = tmp.cap;
-
+		void	swap(ft::vector<value_type> &x) {
+			std::swap(this->allocator, x.allocator);
+			std::swap(this->sz, x.sz);
+			std::swap(this->cap, x.cap);
+			std::swap(this->_arr, x._arr);
 		}
 
 		const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
