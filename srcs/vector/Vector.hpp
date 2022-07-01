@@ -31,18 +31,34 @@ namespace ft {
 		typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 		// iterators member types
 
-		explicit vector(const allocator_type& alloc = allocator_type()):_arr(nullptr), sz(0), cap(0),
-			allocator(alloc){};
+		explicit vector(const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0),
+			allocator(alloc){
+		};
 //
 		explicit vector(size_type n, const value_type& val = value_type(),
-			   const allocator_type& alloc = allocator_type()):_arr(0), sz(n),cap(n),allocator(alloc) {
+			   const allocator_type& alloc = allocator_type()): sz(n),cap(n),allocator(alloc) {
 				_arr = allocator.allocate(n);
 				for (size_type i = 0;i < n; i++) {
 					allocator.construct(_arr + i, val);
 				}
-				sz = n;
-				cap = n;
+//				sz = n;
+//				cap = n;
 		}
+
+		vector&	operator=(const vector& x){
+			allocator.deallocate(_arr, cap);
+			this->sz = x.sz;
+			this->allocator = x.allocator;
+			this->cap = x.cap;
+			this->_arr = x._arr;
+			this->_arr =  allocator.allocate(x.cap);
+			for (size_type i = 0;i < sz; i++) {
+				allocator.construct(_arr + i, *(x._arr + i));
+			}
+			return (*this);
+		}
+
+
 		template < typename InputIterator >
 			vector(InputIterator first, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type& alloc = allocator_type()):_arr(0), sz(0), cap(0), allocator(alloc) {
 			sz = ft::distance(first, last);
@@ -73,29 +89,43 @@ namespace ft {
 		};
 		// in vector constructor ^^^^^^^^
 		void reserve(size_type n) {
-			if (n < cap) return;
-			T *newPtr;
-			newPtr = allocator.allocate(n);
-			try {
-				std::uninitialized_copy(_arr, _arr + sz, newPtr);
-			} catch(...) {
-				allocator.deallocate(newPtr, n);
+			if (n > cap && n < max_size())
+			{
+//				std::cout << size() << std::endl;
+				T *newPtr;
+				newPtr = allocator.allocate(n);
+				try {
+					std::uninitialized_copy(_arr, _arr + sz, newPtr);
+				} catch(...) {
+					allocator.deallocate(newPtr, n);
+					throw ;
+				}
+				allocator.deallocate(_arr, cap);
+				_arr = newPtr;
+				cap = n;
 			}
-			allocator.deallocate(_arr, sz);
-			for (size_t i = 0;i < sz; i++) {
-				allocator.destroy(_arr + i);
-			}
-			_arr = newPtr;
-			cap = n;
+//			if (n < cap) return;
+//			T *newPtr;
+//			newPtr = allocator.allocate(n);
+//			try {
+//				std::uninitialized_copy(_arr, _arr + sz, newPtr);
+//			} catch(...) {
+//				allocator.deallocate(newPtr, n);
+//			}
+//			allocator.deallocate(_arr, sz);
+////			for (size_t i = 0;i < sz; i++) {
+////				allocator.destroy(_arr + i);
+////			}
+//			_arr = newPtr;
+//			cap = n;
 		}
 
 		iterator insert (iterator position, const value_type& val) {
+
 			if (position < this->begin() || position > this->begin())
 				std::logic_error("error");
-			if (sz == cap)
+			if (cap < sz + 1)
 				reserve(cap * 2);
-			else if (cap == 0)
-				reserve(1);
 			size_t distValueAppend = 0;
 			size_t i = 0;
 			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
@@ -108,12 +138,40 @@ namespace ft {
 			return iterator(begin() + distValueAppend);
 		}
 
-		void insert (iterator position, size_type n, const value_type& val) {
-			while(n > 0) {
-				position = insert(position, val);
-				n--;
+//		void insert (iterator position, size_type n, const value_type& val) {
+//
+//		}
+
+		template <class InputIterator>
+		void insert (iterator position, InputIterator first, InputIterator last) {
+			if (position < this->begin() || position > this->begin())
+				std::logic_error("error");
+			size_t countNewElement = static_cast<size_t>(ft::distance(first, last));
+			size_t distToAddElement = static_cast<size_t>(ft::distance(begin(), position));
+			size_t countVector = sz - distToAddElement;
+			size_t endElement = static_cast<size_t>(ft::distance(last, end()));
+
+			if (countNewElement > cap * 2)
+				reserve(countNewElement + sz);
+			else if (countNewElement + sz > cap && countNewElement + sz < cap * 2)
+				reserve(cap * 2);
+			std::cout << endElement << std::endl;
+			for (size_t i = 0;i < endElement;i++) {
+				allocator.construct(_arr + sz + countNewElement + i, *(_arr + endElement + i));
+				sz++;
 			}
+			for (size_t i = 0; i < countNewElement; i++) {
+				allocator.construct(_arr + distToAddElement + i, *(first));
+				first++;
+			}
+//			_arr = newPtr;
+			std::cout << "distToAddElement " << distToAddElement << std::endl;
+			std::cout << "countNewElement  " << countNewElement << std::endl;
+			std::cout << "countVector      " << countVector << std::endl;
+
+
 		}
+
 
 		void	dispVector() {
 			ft::RAIterator<std::random_access_iterator_tag, T> ite = this->end();
@@ -129,15 +187,15 @@ namespace ft {
 					allocator.destroy(_arr + i);
 				}
 			}else if (n > sz && n < max_size()) {
-				if (n > sz && n <= cap * 2)
+				if (n > cap && n <= cap * 2)
 					reserve(cap * 2);
 				else if (n > cap * 2)
 					reserve(n);
-				for (size_t i = sz; i < n; i++) {
-					allocator.construct(_arr + i, val);
+				for (;sz < n; sz++) {
+					allocator.construct(_arr + sz, val);
 				}
-				sz = n;
 			}
+//			sz = n;
 		}
 
 		iterator	erase(iterator position) {
@@ -176,14 +234,12 @@ namespace ft {
 		};
 
 		void push_back (const value_type& val) {
-			if (sz == cap) {
-				if (sz == 0)
-					reserve(1);
-				else
-					reserve(cap * 2);
-			}
+			if (!sz)
+				reserve(1);
+			else if (sz == cap)
+				reserve(cap * 2);
 			allocator.construct(_arr + sz, val);
-			++sz;
+			sz++;
 		}
 
 		void pop_back() {
@@ -193,9 +249,22 @@ namespace ft {
 		}
 
 		void	assign(size_type n, const value_type& val) {
-			reserve(n);
+			for (size_t i = 0;i < sz;i++) {
+				allocator.destroy(_arr + i);
+			}
+//			reserve(n);
+//			sz = n;
+//			for(size_t i = 0;i < sz;i++) {
+//				allocator.construct(_arr + i, val);
+//			}
+			if (n > cap)
+			{
+				allocator.deallocate(_arr, cap);
+				_arr = allocator.allocate(n);
+				cap = n;
+			}
 			for (size_t i = 0;i < n; i++) {
-				*(_arr + i) = val;
+				allocator.construct(_arr + i, val);
 			}
 			sz = n;
 		};
@@ -219,6 +288,13 @@ namespace ft {
 				first++;
 				i++;
 			}
+//			for (size_t i = 0; i < sz;i++) {
+//				allocator.destroy(_arr + i);
+//			}
+//			while (first != last) {
+//				push_back(*first);
+//				first++;
+//			}
 		}
 
 		void	clear() {
@@ -331,21 +407,21 @@ namespace ft {
 
 	template < typename T, typename Alloc >
 	bool operator< (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
-		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
 	}
 
 	template < typename T, typename Alloc >
-	bool operator<= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
+	bool operator<= (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
 		return (!(rhs < lhs));
 	}
 
 	template < typename T, typename Alloc >
-	bool operator> (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
+	bool operator> (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
 		return (rhs < lhs);
 	}
 
 	template < typename T, typename Alloc >
-	bool operator>= (const ft::vector<T, Alloc>& rhs, const ft::vector<T, Alloc>& lhs) {
+	bool operator>= (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
 		return (!(lhs < rhs));
 	}
 }
