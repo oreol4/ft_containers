@@ -91,7 +91,6 @@ namespace ft {
 		void reserve(size_type n) {
 			if (n > cap && n < max_size())
 			{
-//				std::cout << size() << std::endl;
 				T *newPtr;
 				newPtr = allocator.allocate(n);
 				try {
@@ -104,20 +103,6 @@ namespace ft {
 				_arr = newPtr;
 				cap = n;
 			}
-//			if (n < cap) return;
-//			T *newPtr;
-//			newPtr = allocator.allocate(n);
-//			try {
-//				std::uninitialized_copy(_arr, _arr + sz, newPtr);
-//			} catch(...) {
-//				allocator.deallocate(newPtr, n);
-//			}
-//			allocator.deallocate(_arr, sz);
-////			for (size_t i = 0;i < sz; i++) {
-////				allocator.destroy(_arr + i);
-////			}
-//			_arr = newPtr;
-//			cap = n;
 		}
 
 		iterator insert (iterator position, const value_type& val) {
@@ -186,6 +171,7 @@ namespace ft {
 				for (size_t i = n; i < sz; i++) {
 					allocator.destroy(_arr + i);
 				}
+				sz = n;
 			}else if (n > sz && n < max_size()) {
 				if (n > cap && n <= cap * 2)
 					reserve(cap * 2);
@@ -195,7 +181,6 @@ namespace ft {
 					allocator.construct(_arr + sz, val);
 				}
 			}
-//			sz = n;
 		}
 
 		iterator	erase(iterator position) {
@@ -249,20 +234,15 @@ namespace ft {
 		}
 
 		void	assign(size_type n, const value_type& val) {
-			for (size_t i = 0;i < sz;i++) {
-				allocator.destroy(_arr + i);
-			}
-//			reserve(n);
-//			sz = n;
-//			for(size_t i = 0;i < sz;i++) {
-//				allocator.construct(_arr + i, val);
-//			}
-			if (n > cap)
+			if (sz > 0)
 			{
-				allocator.deallocate(_arr, cap);
-				_arr = allocator.allocate(n);
-				cap = n;
+				for (size_t i = 0;i < sz;i++) {
+					allocator.destroy(_arr + i);
+				}
+				allocator.deallocate(_arr, sz);
 			}
+			if (n > cap)
+				reserve(n);
 			for (size_t i = 0;i < n; i++) {
 				allocator.construct(_arr + i, val);
 			}
