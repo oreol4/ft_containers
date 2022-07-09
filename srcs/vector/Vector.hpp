@@ -123,11 +123,40 @@ namespace ft {
 			return iterator(begin() + distValueAppend);
 		}
 
-//		void insert (iterator position, size_type n, const value_type& val) {
-//
-//		}
+		void insert (iterator position, size_type n, const value_type& val) {
+			pointer newPtr = NULL;
+			size_t capacity = 0;
+			if (sz + n > cap && sz + n > cap * 2)
+				capacity = sz + n;
+			else if (sz + n > cap && sz + n < cap * 2)
+				capacity = cap + cap;
+			else
+				capacity = cap;
+			newPtr = allocator.allocate(capacity);
+			size_t distToAdd = static_cast<size_t>(ft::distance(begin(), position));
+			size_t i = 0;
+			for (;i < distToAdd; i++) {
+				allocator.construct(newPtr + i, _arr[i]);
+			}
+			size_t j = i;
+			for (size_t j = 0; j < n; j++) {
+				allocator.construct(newPtr + i, val);
+				i++;
+			}
+			for (;j < sz; j++) {
+				allocator.construct(newPtr + i, _arr[j]);
+				i++;
+			}
+			for (size_t j = 0;j < sz;j++) {
+				allocator.destroy(_arr + j);
+			}
+			allocator.deallocate(_arr, cap);
+			_arr = newPtr;
+			sz = sz + n;
+			cap = capacity;
+		}
 
-		template <class InputIterator>
+	/*	template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last) {
 			if (position < this->begin() || position > this->begin())
 				std::logic_error("error");
@@ -155,7 +184,7 @@ namespace ft {
 			std::cout << "countVector      " << countVector << std::endl;
 
 
-		}
+		}*/
 
 
 		void	dispVector() {
@@ -235,12 +264,7 @@ namespace ft {
 
 		void	assign(size_type n, const value_type& val) {
 			if (sz > 0)
-			{
-				for (size_t i = 0;i < sz;i++) {
-					allocator.destroy(_arr + i);
-				}
-				allocator.deallocate(_arr, sz);
-			}
+				clear();
 			if (n > cap)
 				reserve(n);
 			for (size_t i = 0;i < n; i++) {
