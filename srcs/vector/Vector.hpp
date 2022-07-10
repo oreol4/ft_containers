@@ -156,36 +156,42 @@ namespace ft {
 			cap = capacity;
 		}
 
-	/*	template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator last) {
+		template <class InputIterator>
+		void insert (iterator position, InputIterator first, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) { // ?
 			if (position < this->begin() || position > this->begin())
 				std::logic_error("error");
-			size_t countNewElement = static_cast<size_t>(ft::distance(first, last));
-			size_t distToAddElement = static_cast<size_t>(ft::distance(begin(), position));
-			size_t countVector = sz - distToAddElement;
-			size_t endElement = static_cast<size_t>(ft::distance(last, end()));
-
-			if (countNewElement > cap * 2)
-				reserve(countNewElement + sz);
-			else if (countNewElement + sz > cap && countNewElement + sz < cap * 2)
-				reserve(cap * 2);
-			std::cout << endElement << std::endl;
-			for (size_t i = 0;i < endElement;i++) {
-				allocator.construct(_arr + sz + countNewElement + i, *(_arr + endElement + i));
-				sz++;
+			size_t countNewElem = static_cast<size_t>(ft::distance(first, last));
+			size_t distToAdd = static_cast<size_t>(ft::distance(begin(), position));
+			size_t lastElems = sz - distToAdd;
+			size_t i = 0;
+			pointer newPtr = NULL;
+			size_t capacity = 0;
+			if (sz + countNewElem > cap && sz + countNewElem > cap * 2)
+				capacity = sz + countNewElem;
+			else if (sz + countNewElem > cap && sz + countNewElem < cap * 2)
+				capacity = cap + cap;
+			else
+				capacity = cap;
+			newPtr = allocator.allocate(capacity);
+			for (;i < distToAdd; i++) { //copy before new elements
+				allocator.construct(newPtr + i, *(_arr + i));
 			}
-			for (size_t i = 0; i < countNewElement; i++) {
-				allocator.construct(_arr + distToAddElement + i, *(first));
-				first++;
+			for (;first != last;first++) { // copy new elements
+				allocator.construct(newPtr + i, *first);
+				i++;
 			}
-//			_arr = newPtr;
-			std::cout << "distToAddElement " << distToAddElement << std::endl;
-			std::cout << "countNewElement  " << countNewElement << std::endl;
-			std::cout << "countVector      " << countVector << std::endl;
-
-
-		}*/
-
+			for (size_t j = 0;j < lastElems;j++) { //copy last elements
+				allocator.construct(newPtr + i, *(_arr + j + distToAdd));
+				i++;
+			}
+			for (size_t i = 0;i < sz;i++) {
+				allocator.destroy(_arr + i);
+			}
+			allocator.deallocate(_arr, cap);
+			_arr = newPtr;
+			sz = countNewElem + sz;
+			cap = capacity;
+		}
 
 		void	dispVector() {
 			ft::RAIterator<std::random_access_iterator_tag, T> ite = this->end();
@@ -292,13 +298,6 @@ namespace ft {
 				first++;
 				i++;
 			}
-//			for (size_t i = 0; i < sz;i++) {
-//				allocator.destroy(_arr + i);
-//			}
-//			while (first != last) {
-//				push_back(*first);
-//				first++;
-//			}
 		}
 
 		void	clear() {
