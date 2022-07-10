@@ -1,9 +1,9 @@
 #ifndef STACK_HPP
 # define STACK_HPP
 #include <vector>
-
+#include "../vector/Vector.hpp"
 namespace  ft {
-	template<typename T, typename Container = std::vector<T> >
+	template<typename T, typename Container = ft::vector<T> >
 	class stack {
 	protected:
 		Container c;
@@ -14,7 +14,8 @@ namespace  ft {
 		typedef typename container_type::const_reference const_reference;
 		typedef size_t	size_type;
 
-		stack() {};
+		explicit stack() {};
+
 		~stack() {};
 		stack(const stack &rhs) { this->c = rhs.c;}
 		stack	&operator=(const stack &rhs) {
@@ -25,8 +26,15 @@ namespace  ft {
 		void 		push(const value_type &elems) { this->c.push_back(elems);}
 		void 		pop() { this->c.pop_back();}
 		reference 	top() { return (this->c.back()); }
+		const_reference top() const { return (this->c.back());}
 		size_type 	size() { return (this->c.size());}
 		bool		empty() const {return (this->c.size() == 0 ? true : false);}
+		void	dispStack() {
+			for (size_t i = 0;i < c.size();i++) {
+				std::cout << c[i] <<  " ";
+			}
+			std::cout << std::endl;
+		}
 		//NON MEMBER FUNCTION
 
 		/*Дружественные функции в C++ — это функции, объявленные вне класса, но
