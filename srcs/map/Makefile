@@ -4,7 +4,7 @@ FLAGS = -Wall -Wextra -Werror -std=c++98
 
 NAME = map
 
-HEADER = pair.hpp\
+HEADER = pair.hpp Map.hpp\
 
 SRC = main.cpp\
 
