@@ -109,8 +109,13 @@ namespace ft {
 
 			if (position < this->begin() || position > this->begin())
 				std::logic_error("error");
-			if (cap < sz + 1)
+			if (cap == sz && cap)
 				reserve(cap * 2);
+			else if (cap < sz + 1)
+				reserve(sz + 1);
+
+//			if (cap < sz + 1)
+//				reserve(cap * 2);
 			size_t distValueAppend = 0;
 			size_t i = 0;
 			distValueAppend = static_cast<size_t>(ft::distance(begin(), position));
@@ -156,6 +161,17 @@ namespace ft {
 			cap = capacity;
 		}
 
+		size_t	capacityFuncInsert(size_t sz, size_t countNewElem, size_t cap) {
+			size_t capacity = 0;
+			if (sz + countNewElem > cap && sz + countNewElem > cap * 2)
+				capacity = sz + countNewElem;
+			else if (sz + countNewElem > cap && sz + countNewElem < cap * 2)
+				capacity = cap + cap;
+			else
+				capacity = cap;
+			return capacity;
+		}
+
 		template <class InputIterator>
 		void insert (iterator position, InputIterator first, typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type last) { // ?
 			if (position < this->begin() || position > this->begin())
@@ -165,13 +181,7 @@ namespace ft {
 			size_t lastElems = sz - distToAdd;
 			size_t i = 0;
 			pointer newPtr = NULL;
-			size_t capacity = 0;
-			if (sz + countNewElem > cap && sz + countNewElem > cap * 2)
-				capacity = sz + countNewElem;
-			else if (sz + countNewElem > cap && sz + countNewElem < cap * 2)
-				capacity = cap + cap;
-			else
-				capacity = cap;
+			size_t capacity = capacityFuncInsert(sz, countNewElem, cap);
 			newPtr = allocator.allocate(capacity);
 			for (;i < distToAdd; i++) { //copy before new elements
 				allocator.construct(newPtr + i, *(_arr + i));
@@ -184,9 +194,8 @@ namespace ft {
 				allocator.construct(newPtr + i, *(_arr + j + distToAdd));
 				i++;
 			}
-			for (size_t i = 0;i < sz;i++) {
-				allocator.destroy(_arr + i);
-			}
+			countNewElem += sz;
+			clear();
 			allocator.deallocate(_arr, cap);
 			_arr = newPtr;
 			sz = countNewElem + sz;
