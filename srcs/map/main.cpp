@@ -1,16 +1,12 @@
 #include <iostream>
-#include "pair.hpp"
-#include <string>
+//#include "pair.hpp"
 #include "Map.hpp"
-#include <map>
-#include "BTree.hpp"
+
 
 int main() {
-	ft::pair<int, std::string> f(141, "Hello world");
-	ft::pair<int, std::string> t;
-	ft::RBtree<int>	m;
-	std::cout << m._root.data << std::endl;
-
-
-	return (0);
+	ft::map<int, int> t;
+	t.__root->data = 4;
+	std::cout << t.__root->data << std::endl;
+	std::cout << t.__root->is_red << std::endl;
+	t.__root->insertNode(t, 44);
 }

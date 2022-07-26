@@ -4,7 +4,7 @@ FLAGS = -Wall -Wextra -Werror -std=c++98
 
 NAME = map
 
-HEADER = pair.hpp Map.hpp\
+HEADER = Map.hpp\
 
 SRC = main.cpp\
 
@@ -14,7 +14,7 @@ all:
 	$(MAKE) $(NAME)
 
 $(NAME): $(OBJS) $(HEADER)
-	$(CC) -I./ $(FLAGS) -o $(NAME) $(OBJS)
+	$(CC) $(HEADER) $(FLAGS) -o $(NAME) $(OBJS)
 
 $.o: %.cpp
 	@$(CC) $(FLAGS) -c $< -o $@
