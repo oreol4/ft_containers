@@ -1,10 +1,12 @@
 CC = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++11
 
 NAME = map
 
-HEADER = Map.hpp\
+HEADER = utils/node.hpp\
+	 utils/comp.hpp\
+	 utils/pair.hpp\
 
 SRC = main.cpp\
 
